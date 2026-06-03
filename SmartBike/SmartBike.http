@@ -1,0 +1,6 @@
+@SmartBike_HostAddress = http://localhost:5272
+
+GET {{SmartBike_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
