@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Modelos;
 
@@ -22,100 +17,57 @@ namespace SmartBike.Controllers
 
         // GET: api/Usuarios
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuario()
+        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
         {
             return await _context.Usuario.ToListAsync();
         }
 
-        // GET: api/Usuarios/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Usuario>> GetUsuario(string id)
+        // GET: api/Usuarios/1005678901
+        [HttpGet("{cedula}")]
+        public async Task<ActionResult<Usuario>> GetUsuario(string cedula)
         {
-            var usuario = await _context.Usuario.FindAsync(id);
-
-            if (usuario == null)
-            {
-                return NotFound();
-            }
-
+            var usuario = await _context.Usuario.FindAsync(cedula);
+            if (usuario == null) return NotFound(new { mensaje = "Usuario no encontrado." });
             return usuario;
         }
 
-        // PUT: api/Usuarios/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuario(string id, Usuario usuario)
-        {
-            if (id != usuario.Cedula)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(usuario).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UsuarioExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
         // POST: api/Usuarios
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
         {
-            _context.Usuario.Add(usuario);
-            try
+            if (_context.Usuario.Any(u => u.Cedula == usuario.Cedula))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (UsuarioExists(usuario.Cedula))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                return Conflict(new { mensaje = "Ya existe un usuario registrado con esa cédula." });
             }
 
-            return CreatedAtAction("GetUsuario", new { id = usuario.Cedula }, usuario);
+            usuario.FechaRegistro = DateTime.Now;
+            _context.Usuario.Add(usuario);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetUsuario), new { cedula = usuario.Cedula }, usuario);
         }
 
-        // DELETE: api/Usuarios/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUsuario(string id)
+        // PUT: api/Usuarios/1005678901
+        [HttpPut("{cedula}")]
+        public async Task<IActionResult> PutUsuario(string cedula, Usuario usuario)
         {
-            var usuario = await _context.Usuario.FindAsync(id);
-            if (usuario == null)
-            {
-                return NotFound();
-            }
+            if (cedula != usuario.Cedula) return BadRequest(new { mensaje = "La cédula no coincide." });
+
+            _context.Entry(usuario).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return Ok(new { mensaje = "Datos de usuario actualizados." });
+        }
+
+        // DELETE: api/Usuarios/1005678901
+        [HttpDelete("{cedula}")]
+        public async Task<IActionResult> DeleteUsuario(string cedula)
+        {
+            var usuario = await _context.Usuario.FindAsync(cedula);
+            if (usuario == null) return NotFound();
 
             _context.Usuario.Remove(usuario);
             await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool UsuarioExists(string id)
-        {
-            return _context.Usuario.Any(e => e.Cedula == id);
+            return Ok(new { mensaje = "Usuario eliminado del sistema." });
         }
     }
 }

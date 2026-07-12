@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modelos", "Modelos\Modelos.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Consumer", "Consumer\Consumer.csproj", "{CA06AD6F-5B7A-4B23-B453-8AC76BF4878E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartBike_MVC", "SmartBike_MVC\SmartBike_MVC.csproj", "{E53EEB78-7D25-427B-B522-EE7E070E046B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{CA06AD6F-5B7A-4B23-B453-8AC76BF4878E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA06AD6F-5B7A-4B23-B453-8AC76BF4878E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA06AD6F-5B7A-4B23-B453-8AC76BF4878E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E53EEB78-7D25-427B-B522-EE7E070E046B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E53EEB78-7D25-427B-B522-EE7E070E046B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E53EEB78-7D25-427B-B522-EE7E070E046B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E53EEB78-7D25-427B-B522-EE7E070E046B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

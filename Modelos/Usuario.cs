@@ -63,9 +63,11 @@ namespace Modelos
 
         // Propiedades de navegación
         [ForeignKey(nameof(RolId))]
+        [NotMapped]
         public virtual Rol Rol { get; set; } = null!;
 
         [ForeignKey(nameof(CampusId))]
+        [NotMapped]
         public virtual Campus Campus { get; set; } = null!;
 
         [ForeignKey(nameof(CarreraId))]

@@ -11,8 +11,7 @@ namespace Consumer
     {
         private readonly HttpClient _httpClient;
 
-        // CAMBIO CRUCIAL: Borramos la variable _baseUrl.
-        // Ahora confiamos ciegamente en la URL que configuramos en Program.cs (Render).
+        
 
         public ApiService(HttpClient httpClient)
         {
@@ -24,7 +23,6 @@ namespace Consumer
         {
             try
             {
-                // Usamos directamente "endpoint". El HttpClient ya sabe la base (Render).
                 var datos = await _httpClient.GetFromJsonAsync<T>(endpoint);
 
                 return new ApiResult<T>
