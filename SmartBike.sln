@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartBike", "SmartBike\Smar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modelos", "Modelos\Modelos.csproj", "{C47521A6-B397-443C-B552-FF7318A0B8DC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Consumer", "Consumer\Consumer.csproj", "{CA06AD6F-5B7A-4B23-B453-8AC76BF4878E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C47521A6-B397-443C-B552-FF7318A0B8DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C47521A6-B397-443C-B552-FF7318A0B8DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C47521A6-B397-443C-B552-FF7318A0B8DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA06AD6F-5B7A-4B23-B453-8AC76BF4878E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA06AD6F-5B7A-4B23-B453-8AC76BF4878E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA06AD6F-5B7A-4B23-B453-8AC76BF4878E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA06AD6F-5B7A-4B23-B453-8AC76BF4878E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
