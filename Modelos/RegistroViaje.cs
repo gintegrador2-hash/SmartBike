@@ -34,7 +34,7 @@ namespace Modelos
 
         [Required]
         [Column("fecha")]
-        public DateTime Fecha { get; set; } // Representa solo la fecha del viaje
+        public DateTime Fecha { get; set; }
 
         [Required]
         [Column("distancia_km", TypeName = "decimal(6,2)")]
@@ -48,17 +48,24 @@ namespace Modelos
         [Column("fecha_registro")]
         public DateTime FechaRegistro { get; set; } = DateTime.Now;
 
-        // Propiedades de navegación
+        // ============================================
+        // Propiedades de navegación corregidas con [NotMapped]
+        // ============================================
+
         [ForeignKey(nameof(UsuarioCedula))]
+        [NotMapped]
         public virtual Usuario Usuario { get; set; } = null!;
 
         [ForeignKey(nameof(TipoTransporteId))]
+        [NotMapped]
         public virtual TipoTransporte TipoTransporte { get; set; } = null!;
 
         [ForeignKey(nameof(EstacionamientoId))]
+        [NotMapped]
         public virtual Estacionamiento? Estacionamiento { get; set; }
 
         [ForeignKey(nameof(ValidadoPor))]
+        [NotMapped]
         public virtual Usuario? Validador { get; set; }
     }
 }

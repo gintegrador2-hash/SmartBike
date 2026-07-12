@@ -73,8 +73,9 @@ namespace Modelos
 
         // Relación 1:1 inversa con Métricas
         public virtual MetricaUsuario? Metricas { get; set; }
-
+        [NotMapped]
         public virtual ICollection<RegistroViaje> ViajesRealizados { get; set; } = new List<RegistroViaje>();
+        [NotMapped]
         public virtual ICollection<RegistroViaje> ViajesValidados { get; set; } = new List<RegistroViaje>();
         public virtual ICollection<ConversacionChatbot> Conversaciones { get; set; } = new List<ConversacionChatbot>();
     }

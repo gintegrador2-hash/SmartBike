@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SmartBike
 {
@@ -6,6 +8,8 @@ namespace SmartBike
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddDbContext<SmartBikeContext>(options =>
+                options.UseNpgsql(builder.Configuration.GetConnectionString("SmartBikeContext") ?? throw new InvalidOperationException("Connection string 'SmartBikeContext' not found.")));
 
             // Add services to the container.
 
