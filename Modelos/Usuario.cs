@@ -64,21 +64,24 @@ namespace Modelos
         // Propiedades de navegación
         [ForeignKey(nameof(RolId))]
         [NotMapped]
-        public virtual Rol Rol { get; set; } = null!;
+        public virtual Rol? Rol { get; set; } // <- CORREGIDO: Se agregó ? y se quitó = null!
 
         [ForeignKey(nameof(CampusId))]
         [NotMapped]
-        public virtual Campus Campus { get; set; } = null!;
+        public virtual Campus? Campus { get; set; } // <- CORREGIDO: Se agregó ? y se quitó = null!
 
         [ForeignKey(nameof(CarreraId))]
         public virtual Carrera? Carrera { get; set; }
 
         // Relación 1:1 inversa con Métricas
         public virtual MetricaUsuario? Metricas { get; set; }
+
         [NotMapped]
         public virtual ICollection<RegistroViaje> ViajesRealizados { get; set; } = new List<RegistroViaje>();
+
         [NotMapped]
         public virtual ICollection<RegistroViaje> ViajesValidados { get; set; } = new List<RegistroViaje>();
+
         public virtual ICollection<ConversacionChatbot> Conversaciones { get; set; } = new List<ConversacionChatbot>();
     }
 }

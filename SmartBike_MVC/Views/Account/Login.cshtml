@@ -3,7 +3,6 @@
     ViewData["Title"] = "Iniciar sesión";
     Layout = "_AuthLayout";
 }
-
 <div class="sb-auth-brand">
     <div class="sb-widget-icon sb-auth-icon"><i class="fa-solid fa-bicycle"></i></div>
     <div class="ms-2">
@@ -37,7 +36,7 @@
         <label asp-for="Contrasena" class="form-label"></label>
         <div class="input-group">
             <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
-            <input asp-for="Contrasena" class="form-control" placeholder="••••••••" />
+            <input asp-for="Contrasena" type="password" class="form-control" placeholder="••••••••" />
         </div>
         <span asp-validation-for="Contrasena" class="text-danger"></span>
     </div>

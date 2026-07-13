@@ -35,7 +35,7 @@ namespace SmartBike_MVC.Controllers
             var loginData = new
             {
                 Correo = model.CorreoInstitucional,
-                Clave = model.Contrasena // AQUÍ: Cambiamos Password por Contrasena
+                Clave = model.Contrasena
             };
 
             // 2. Consultamos al método /login que creamos en el Paso 1
@@ -91,9 +91,11 @@ namespace SmartBike_MVC.Controllers
                 Nombres = model.Nombres,
                 Apellidos = model.Apellidos,
                 CorreoInstitucional = model.CorreoInstitucional,
-                ContrasenaHash = model.Contrasena, // AQUÍ: Cambiamos Password por Contrasena
-                RolId = 2, // Asumiendo que 2 es tu rol de usuario normal
-                CampusId = 1,
+                ContrasenaHash = model.Contrasena,
+
+                RolId = 1, // <--- CAMBIADO A 1 (Debe coincidir con el ID de tu tabla Roles)
+                CampusId = 1, // <--- (Debe coincidir con el ID de tu tabla Campus)
+
                 FechaRegistro = DateTime.Now,
                 Estado = true
             };

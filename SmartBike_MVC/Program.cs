@@ -21,8 +21,8 @@ namespace SmartBike_MVC
             // INICIO DE LA CONEXIÓN MVC -> API
             builder.Services.AddHttpClient<ApiService>(client =>
             {
-                // Cambia este puerto por la URL y puerto reales donde se ejecuta la API de SmartBike
-                string urlFija = "https://localhost:7001/api/";
+                // Apuntando al puerto 7119 donde se ejecuta tu API
+                string urlFija = "https://localhost:7119/api/";
 
                 Console.WriteLine($"🚀 CONECTANDO SMARTBIKE MVC A API: {urlFija}");
                 client.BaseAddress = new Uri(urlFija);
