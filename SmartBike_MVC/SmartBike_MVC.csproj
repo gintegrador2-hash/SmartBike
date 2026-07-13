@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Consumer\Consumer.csproj" />
+    <ProjectReference Include="..\Modelos\Modelos.csproj" />
   </ItemGroup>
 
 </Project>

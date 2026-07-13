@@ -22,6 +22,10 @@ namespace SmartBike_MVC.Models
 
     public class RegisterViewModel
     {
+        [Required(ErrorMessage = "La cédula es obligatoria")]
+        [StringLength(10, ErrorMessage = "La cédula debe tener máximo 10 caracteres")]
+        [Display(Name = "Cédula")]
+        public string Cedula { get; set; } = null!;
         [Required(ErrorMessage = "Los nombres son obligatorios")]
         [Display(Name = "Nombres")]
         public string Nombres { get; set; } = null!;
