@@ -69,5 +69,28 @@ namespace SmartBike.Controllers
             await _context.SaveChangesAsync();
             return Ok(new { mensaje = "Usuario eliminado del sistema." });
         }
+        // POST: api/Usuarios/login
+        [HttpPost("login")]
+        public async Task<ActionResult<Usuario>> Login([FromBody] LoginDto loginData)
+        {
+            // Busca al usuario que coincida con el correo y contraseña (hash)
+            var usuario = await _context.Usuario
+                .FirstOrDefaultAsync(u => u.CorreoInstitucional == loginData.Correo
+                                       && u.ContrasenaHash == loginData.Clave);
+
+            if (usuario == null)
+            {
+                return Unauthorized(new { mensaje = "Correo o contraseña incorrectos." });
+            }
+
+            return Ok(usuario);
+        }
+    } // <- Esta es la llave de cierre de tu clase UsuariosController
+
+    // Agrega esta pequeña clase al final del mismo archivo para recibir los datos de login
+    public class LoginDto
+    {
+        public string Correo { get; set; } = null!;
+        public string Clave { get; set; } = null!;
     }
 }
