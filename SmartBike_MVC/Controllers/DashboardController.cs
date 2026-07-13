@@ -1,12 +1,21 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartBike_MVC.Models;
+using Consumer; // <- IMPORTANTE: Agregamos la referencia a tu ApiService
 
 namespace SmartBike_MVC.Controllers
 {
     [Authorize]
     public class DashboardController : Controller
     {
+        private readonly ApiService _apiService;
+
+        // INYECTAMOS EL APISERVICE AQUÍ
+        public DashboardController(ApiService apiService)
+        {
+            _apiService = apiService;
+        }
+
         public IActionResult Index()
         {
             var nombre = User.Identity?.Name?.Split(' ')[0] ?? "Estudiante";
