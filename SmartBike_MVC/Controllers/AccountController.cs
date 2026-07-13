@@ -3,11 +3,21 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using SmartBike_MVC.Models;
+using Consumer; // <- IMPORTANTE: Referencia a tu ApiService
+using Modelos;  // <- IMPORTANTE: Referencia a tus Modelos (Usuario)
 
 namespace SmartBike_MVC.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly ApiService _apiService;
+
+        // INYECTAMOS EL APISERVICE
+        public AccountController(ApiService apiService)
+        {
+            _apiService = apiService;
+        }
+
         [HttpGet]
         public IActionResult Login(string? returnUrl = null)
         {
@@ -21,30 +31,44 @@ namespace SmartBike_MVC.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            // Validación temporal mientras se conecta contra Modelos.Usuario / base de datos real
-            if (!model.CorreoInstitucional.EndsWith("@utn.edu.ec", StringComparison.OrdinalIgnoreCase))
+            // 1. Preparamos los datos para enviarlos a la API
+            var loginData = new
             {
-                ModelState.AddModelError(string.Empty, "Debe ingresar con su correo institucional @utn.edu.ec");
-                return View(model);
-            }
-
-            var claims = new List<Claim>
-            {
-                new(ClaimTypes.Name, "Juan Pérez"),
-                new(ClaimTypes.Email, model.CorreoInstitucional),
-                new("Carrera", "Ingeniería en Sistemas")
+                Correo = model.CorreoInstitucional,
+                Clave = model.Contrasena // AQUÍ: Cambiamos Password por Contrasena
             };
 
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(identity),
-                new AuthenticationProperties { IsPersistent = model.Recordarme });
+            // 2. Consultamos al método /login que creamos en el Paso 1
+            var respuesta = await _apiService.PostWithResponseAsync<object, Usuario>("Usuarios/login", loginData);
 
-            if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
-                return Redirect(model.ReturnUrl);
+            if (respuesta.Success && respuesta.Data != null)
+            {
+                var usuarioEncontrado = respuesta.Data;
 
-            return RedirectToAction("Index", "Dashboard");
+                // 3. ¡Login exitoso! Creamos la sesión (Cookies) con los datos REALES
+                var claims = new List<Claim>
+                {
+                    new(ClaimTypes.Name, $"{usuarioEncontrado.Nombres} {usuarioEncontrado.Apellidos}"),
+                    new(ClaimTypes.Email, usuarioEncontrado.CorreoInstitucional),
+                    new(ClaimTypes.NameIdentifier, usuarioEncontrado.Cedula),
+                    new("RolId", usuarioEncontrado.RolId.ToString())
+                };
+
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(identity),
+                    new AuthenticationProperties { IsPersistent = model.Recordarme });
+
+                if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                    return Redirect(model.ReturnUrl);
+
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            // Si falla, mostramos el error
+            ModelState.AddModelError(string.Empty, "Correo o contraseña incorrectos.");
+            return View(model);
         }
 
         [HttpGet]
@@ -55,14 +79,36 @@ namespace SmartBike_MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Register(RegisterViewModel model)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            // TODO: persistir en Modelos.Usuario mediante el DbContext real
-            TempData["RegistroExitoso"] = "Cuenta creada correctamente. Ya puedes iniciar sesión.";
-            return RedirectToAction(nameof(Login));
+            // 1. Mapeamos tu ViewModel a tu Modelo real de BD
+            var nuevoUsuario = new Usuario
+            {
+                Cedula = model.Cedula,
+                Nombres = model.Nombres,
+                Apellidos = model.Apellidos,
+                CorreoInstitucional = model.CorreoInstitucional,
+                ContrasenaHash = model.Contrasena, // AQUÍ: Cambiamos Password por Contrasena
+                RolId = 2, // Asumiendo que 2 es tu rol de usuario normal
+                CampusId = 1,
+                FechaRegistro = DateTime.Now,
+                Estado = true
+            };
+
+            // 2. Guardamos mediante la API usando POST
+            var respuesta = await _apiService.PostAsync("Usuarios", nuevoUsuario);
+
+            if (respuesta.Success)
+            {
+                TempData["RegistroExitoso"] = "Cuenta creada correctamente en la base de datos. Ya puedes iniciar sesión.";
+                return RedirectToAction(nameof(Login));
+            }
+
+            ModelState.AddModelError(string.Empty, "Error al registrar en la base de datos: " + (respuesta.Message ?? "Intente de nuevo"));
+            return View(model);
         }
 
         [HttpPost]
