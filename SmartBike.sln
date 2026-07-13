@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.8.11925.187
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartBike", "SmartBike\SmartBike.csproj", "{D7242716-CCE9-4F3B-972D-2A5DAFF24081}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartBike.API", "SmartBike\SmartBike.API.csproj", "{D7242716-CCE9-4F3B-972D-2A5DAFF24081}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modelos", "Modelos\Modelos.csproj", "{C47521A6-B397-443C-B552-FF7318A0B8DC}"
 EndProject

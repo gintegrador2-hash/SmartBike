@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Consumer; // <- Importante: Agregar el namespace de tu ApiService
 
 namespace SmartBike_MVC
 {
@@ -16,6 +17,22 @@ namespace SmartBike_MVC
                     options.AccessDeniedPath = "/Account/Login";
                     options.ExpireTimeSpan = TimeSpan.FromHours(8);
                 });
+
+            // INICIO DE LA CONEXIÓN MVC -> API
+            builder.Services.AddHttpClient<ApiService>(client =>
+            {
+                // Cambia este puerto por la URL y puerto reales donde se ejecuta la API de SmartBike
+                string urlFija = "https://localhost:7001/api/";
+
+                Console.WriteLine($"🚀 CONECTANDO SMARTBIKE MVC A API: {urlFija}");
+                client.BaseAddress = new Uri(urlFija);
+            })
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                // Permite ignorar errores de certificado SSL en desarrollo local
+                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+            });
+            // FIN DE LA CONEXIÓN
 
             var app = builder.Build();
 
