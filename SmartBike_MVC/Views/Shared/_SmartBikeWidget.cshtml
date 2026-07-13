@@ -1,0 +1,34 @@
+﻿<div class="sb-widget-btn" id="sbWidgetBtn" onclick="toggleSbWidget()">
+    <i class="fa-solid fa-bicycle"></i>
+</div>
+
+<div class="sb-widget-panel" id="sbWidgetPanel">
+    <div class="sb-widget-header">
+        <div class="d-flex align-items-center">
+            <div class="sb-widget-icon"><i class="fa-solid fa-bicycle"></i></div>
+            <div class="ms-2">
+                <div class="sb-widget-title">SmartBike UTN</div>
+                <div class="sb-widget-subtitle">Movilidad Sostenible</div>
+            </div>
+        </div>
+        <span onclick="toggleSbWidget()" class="sb-widget-close"><i class="fa-solid fa-xmark"></i></span>
+    </div>
+
+    <div class="sb-widget-body">
+        <h5>¡Bienvenido a SmartBike!</h5>
+        <p>Descubre una nueva forma de movilizarte dentro del campus mientras ayudas al medio ambiente.</p>
+
+        <a class="btn sb-btn-solid w-100 mb-2" asp-controller="Account" asp-action="Login">
+            <i class="fa-solid fa-right-to-bracket"></i> Iniciar sesión
+        </a>
+        <a class="btn sb-btn-outline w-100 mb-2" asp-controller="Account" asp-action="Register">
+            <i class="fa-solid fa-user-plus"></i> Registrarse
+        </a>
+        <a class="btn sb-btn-light w-100 mb-2" asp-controller="Account" asp-action="Login" asp-route-returnUrl="/Dashboard/Preguntas">
+            <i class="fa-solid fa-robot"></i> Hablar con SmartBot
+        </a>
+        <a class="btn sb-btn-light w-100" asp-controller="Home" asp-action="Index" asp-fragment="conocenos">
+            <i class="fa-solid fa-circle-info"></i> Conócenos
+        </a>
+    </div>
+</div>

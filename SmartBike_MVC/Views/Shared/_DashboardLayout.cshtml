@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SmartBike UTN</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/smartbike.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+<body class="sb-dash-body">
+    <div class="sb-dash-wrapper">
+        <aside class="sb-sidebar">
+            <div class="sb-sidebar-brand">
+                <div class="sb-widget-icon"><i class="fa-solid fa-bicycle"></i></div>
+                <div class="ms-2">
+                    <div class="sb-sidebar-title">SmartBike</div>
+                    <div class="sb-sidebar-subtitle">UTN Campus</div>
+                </div>
+            </div>
+
+            <nav class="sb-sidebar-nav">
+                @{
+                    var activo = ViewData["Active"] as string;
+                }
+                <a class="sb-nav-item @(activo == "Inicio" ? "active" : "")" asp-controller="Dashboard" asp-action="Index">
+                    <i class="fa-solid fa-house"></i> Inicio
+                </a>
+                <a class="sb-nav-item @(activo == "Beneficios" ? "active" : "")" asp-controller="Dashboard" asp-action="Beneficios">
+                    <i class="fa-solid fa-leaf"></i> Beneficios
+                </a>
+                <a class="sb-nav-item @(activo == "Preguntas" ? "active" : "")" asp-controller="Dashboard" asp-action="Preguntas">
+                    <i class="fa-regular fa-circle-question"></i> Preguntas
+                </a>
+                <a class="sb-nav-item @(activo == "DatosCuriosos" ? "active" : "")" asp-controller="Dashboard" asp-action="DatosCuriosos">
+                    <i class="fa-regular fa-lightbulb"></i> Datos Curiosos
+                </a>
+                <a class="sb-nav-item @(activo == "Perfil" ? "active" : "")" asp-controller="Dashboard" asp-action="Perfil">
+                    <i class="fa-regular fa-user"></i> Perfil
+                </a>
+                <a class="sb-nav-item @(activo == "Configuracion" ? "active" : "")" asp-controller="Dashboard" asp-action="Configuracion">
+                    <i class="fa-solid fa-gear"></i> Configuración
+                </a>
+            </nav>
+
+            <form asp-controller="Account" asp-action="Logout" method="post" class="sb-sidebar-logout">
+                <button type="submit" class="sb-nav-item sb-nav-logout">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
+                </button>
+            </form>
+        </aside>
+
+        <main class="sb-dash-content">
+            @RenderBody()
+        </main>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SmartBike UTN</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/smartbike.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+<body>
+    <div class="sb-auth-wrapper">
+        <div class="sb-auth-left">
+            <div class="sb-auth-img"></div>
+            <h2>Muévete de forma inteligente</h2>
+            <p>SmartBike UTN — pedalea hacia un campus más sostenible y saludable.</p>
+        </div>
+        <div class="sb-auth-right">
+            <a class="sb-auth-back" asp-controller="Home" asp-action="Index">
+                <i class="fa-solid fa-chevron-left"></i> Volver al portal
+            </a>
+            @RenderBody()
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

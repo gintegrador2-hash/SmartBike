@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - UTN Portal Institucional</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/smartbike.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+<body class="portal-body">
+
+    <div class="utn-topbar">
+        <div class="container-fluid d-flex justify-content-between">
+            <span>
+                <i class="fa-solid fa-location-dot"></i> Av. 17 de Julio 5-21 y Gral. José María Córdova
+                &nbsp; <i class="fa-solid fa-envelope"></i> info@utn.edu.ec
+                &nbsp; <i class="fa-solid fa-phone"></i> 062 901 600
+            </span>
+            <span><i class="fa-brands fa-facebook"></i> <i class="fa-solid fa-share-nodes"></i> <i class="fa-brands fa-youtube"></i> <i class="fa-brands fa-instagram"></i></span>
+        </div>
+    </div>
+
+    <header class="utn-header">
+        <div class="container-fluid d-flex align-items-center justify-content-between py-2">
+            <a class="d-flex align-items-center text-decoration-none" asp-controller="Home" asp-action="Index">
+                <div class="utn-logo">UTN</div>
+                <div class="ms-2">
+                    <div class="utn-title">Universidad Técnica del Norte</div>
+                    <div class="utn-subtitle">Portal Institucional</div>
+                </div>
+            </a>
+            <nav class="d-none d-lg-flex utn-nav">
+                <a href="#">INICIO</a>
+                <a href="#">LA UTN</a>
+                <a href="#">ACADEMIA</a>
+                <a href="#">INVESTIGACIÓN</a>
+                <a href="#">VINCULACIÓN</a>
+                <a href="#">GESTIÓN</a>
+                <a href="#">SRI</a>
+                <a href="#">SERVICIOS</a>
+                <a href="#">TRANSPARENCIA</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="utn-footer">
+        <div class="container-fluid text-center py-3">
+            &copy; @DateTime.Now.Year Universidad Técnica del Norte - Ibarra, Ecuador
+        </div>
+    </footer>
+
+    @await Html.PartialAsync("_SmartBikeWidget")
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

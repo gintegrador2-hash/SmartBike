@@ -1,0 +1,59 @@
+﻿@model SmartBike_MVC.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Iniciar sesión";
+    Layout = "_AuthLayout";
+}
+
+<div class="sb-auth-brand">
+    <div class="sb-widget-icon sb-auth-icon"><i class="fa-solid fa-bicycle"></i></div>
+    <div class="ms-2">
+        <div class="sb-auth-brand-title">SmartBike</div>
+        <div class="sb-auth-brand-subtitle">Universidad Técnica del Norte</div>
+    </div>
+</div>
+
+<h3 class="sb-auth-heading">Iniciar sesión</h3>
+<p class="sb-auth-subheading">Accede a tu cuenta SmartBike UTN</p>
+
+@if (TempData["RegistroExitoso"] != null)
+{
+    <div class="alert alert-success">@TempData["RegistroExitoso"]</div>
+}
+
+<form asp-controller="Account" asp-action="Login" method="post">
+    <input type="hidden" asp-for="ReturnUrl" />
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+    <div class="mb-3">
+        <label asp-for="CorreoInstitucional" class="form-label"></label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="fa-regular fa-envelope"></i></span>
+            <input asp-for="CorreoInstitucional" class="form-control" placeholder="usuario@utn.edu.ec" />
+        </div>
+        <span asp-validation-for="CorreoInstitucional" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Contrasena" class="form-label"></label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+            <input asp-for="Contrasena" class="form-control" placeholder="••••••••" />
+        </div>
+        <span asp-validation-for="Contrasena" class="text-danger"></span>
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="Recordarme" class="form-check-input" />
+        <label asp-for="Recordarme" class="form-check-label"></label>
+    </div>
+
+    <button type="submit" class="btn sb-btn-solid w-100">Iniciar sesión</button>
+
+    <p class="text-center mt-3">
+        ¿No tienes cuenta? <a asp-controller="Account" asp-action="Register" class="sb-link-green">Crear cuenta</a>
+    </p>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

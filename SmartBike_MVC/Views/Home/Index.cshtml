@@ -1,8 +1,92 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model SmartBike_MVC.Models.HomeViewModel
+@{
+    ViewData["Title"] = "Inicio";
+    Layout = "_PortalLayout";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<section class="utn-hero">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <div class="utn-hero-badge">
+                    <i class="fa-solid fa-circle-check"></i> CONOCE NUESTRA
+                    <div class="utn-hero-badge-strong">OFERTA ACADÉMICA</div>
+                </div>
+                <p class="utn-hero-text">
+                    La Universidad Técnica del Norte, cuenta con carreras de grado y programas de
+                    posgrado en todos los campos del conocimiento, tanto en la modalidad presencial,
+                    semipresencial y virtual. Elija la carrera o programa que quiera estudiar en la
+                    mejor universidad del norte del país la UTN
+                </p>
+                <a href="#" class="btn utn-btn-red">OFERTA ACADÉMICA</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="utn-quicklinks">
+    <div class="container-fluid">
+        <div class="row text-center g-0">
+            <div class="col-6 col-md-3 utn-quicklink"><i class="fa-solid fa-gear"></i> SERVICIOS</div>
+            <div class="col-6 col-md-3 utn-quicklink"><i class="fa-solid fa-book"></i> RECURSOS</div>
+            <div class="col-6 col-md-3 utn-quicklink"><i class="fa-solid fa-shield-halved"></i> SRI</div>
+            <div class="col-6 col-md-3 utn-quicklink"><i class="fa-solid fa-briefcase"></i> OFERTAS DE EMPLEO</div>
+        </div>
+    </div>
+</section>
+
+<div class="container-fluid py-4">
+    <h4 class="utn-section-title">ANUNCIOS, CURSOS Y EVENTOS</h4>
+
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+        <h5 class="utn-section-subtitle">Últimas Noticias</h5>
+        <a href="#" class="utn-link-red">Ver todas →</a>
+    </div>
+    <div class="row g-4">
+        @foreach (var noticia in Model.Noticias)
+        {
+            <div class="col-md-4">
+                <div class="utn-card">
+                    <div class="utn-card-img"></div>
+                    <div class="utn-card-body">
+                        <div class="utn-card-date">@noticia.Fecha</div>
+                        <div class="utn-card-title">@noticia.Titulo</div>
+                        <p class="utn-card-text">@noticia.Descripcion</p>
+                        <a href="#" class="btn utn-btn-red-sm">Leer más</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-5 mb-3">
+        <h5 class="utn-section-subtitle">Próximos Eventos</h5>
+        <a href="#" class="utn-link-red">Ver todos →</a>
+    </div>
+    <div class="row g-4">
+        @foreach (var evento in Model.Eventos)
+        {
+            <div class="col-md-4">
+                <div class="utn-event-card d-flex">
+                    <div class="utn-event-date">
+                        <div class="utn-event-day">@evento.Dia</div>
+                        <div class="utn-event-month">@evento.Mes</div>
+                    </div>
+                    <div class="ps-3">
+                        <div class="utn-card-title">@evento.Titulo</div>
+                        <p class="utn-card-text">@evento.Descripcion</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div id="conocenos" class="utn-about mt-5">
+        <h5 class="utn-section-subtitle">Conócenos: SmartBike UTN</h5>
+        <p class="utn-card-text">
+            SmartBike UTN es la plataforma de movilidad sostenible del campus: registra tus
+            recorridos en bicicleta, consulta estacionamientos disponibles y reduce tu huella de
+            carbono mientras te mueves entre facultades.
+        </p>
+    </div>
 </div>

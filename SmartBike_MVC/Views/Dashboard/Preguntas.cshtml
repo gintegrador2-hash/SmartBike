@@ -1,0 +1,62 @@
+﻿@model SmartBike_MVC.Models.PreguntasViewModel
+@{
+    ViewData["Title"] = "Preguntas Frecuentes";
+    ViewData["Active"] = "Preguntas";
+    Layout = "_DashboardLayout";
+}
+
+<h2 class="sb-dash-title">Preguntas Frecuentes</h2>
+<p class="sb-dash-subtitle">Habla con SmartBot, nuestro asistente virtual</p>
+
+<div class="sb-chip-row mt-3">
+    @foreach (var pregunta in Model.PreguntasSugeridas)
+    {
+        <button type="button" class="sb-chip" onclick="enviarPreguntaSugerida(this)">@pregunta</button>
+    }
+</div>
+
+<div class="sb-chat-box mt-3" id="sbChatBox">
+    @foreach (var msg in Model.Mensajes)
+    {
+        <div class="sb-chat-msg @(msg.EsBot ? "sb-chat-bot" : "sb-chat-user")">
+            @if (msg.EsBot)
+            {
+                <div class="sb-widget-icon sb-chat-avatar"><i class="fa-solid fa-robot"></i></div>
+            }
+            <div class="sb-chat-bubble">@msg.Texto</div>
+        </div>
+    }
+</div>
+
+<form class="sb-chat-input-row" id="sbChatForm">
+    <input type="text" id="sbChatInput" class="form-control" placeholder="Escribe tu pregunta..." />
+    <button type="submit" class="btn sb-btn-solid sb-chat-send"><i class="fa-solid fa-paper-plane"></i></button>
+</form>
+
+@section Scripts {
+    <script>
+        function agregarMensaje(texto, esUsuario) {
+            const box = document.getElementById('sbChatBox');
+            const div = document.createElement('div');
+            div.className = 'sb-chat-msg ' + (esUsuario ? 'sb-chat-user' : 'sb-chat-bot');
+            div.innerHTML = (esUsuario ? '' : '<div class="sb-widget-icon sb-chat-avatar"><i class="fa-solid fa-robot"></i></div>')
+                + '<div class="sb-chat-bubble">' + texto + '</div>';
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function enviarPreguntaSugerida(btn) {
+            agregarMensaje(btn.textContent, true);
+            setTimeout(() => agregarMensaje('Gracias por tu pregunta. Un miembro de SmartBot te responderá en breve.', false), 500);
+        }
+
+        document.getElementById('sbChatForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const input = document.getElementById('sbChatInput');
+            if (!input.value.trim()) return;
+            agregarMensaje(input.value, true);
+            input.value = '';
+            setTimeout(() => agregarMensaje('Gracias por tu pregunta. Un miembro de SmartBot te responderá en breve.', false), 500);
+        });
+    </script>
+}

@@ -1,0 +1,20 @@
+﻿@model SmartBike_MVC.Models.InicioViewModel
+@{
+    ViewData["Title"] = "Inicio";
+    ViewData["Active"] = "Inicio";
+    Layout = "_DashboardLayout";
+}
+
+<h2 class="sb-dash-title">¡Hola, @Model.NombreUsuario! 👋</h2>
+<p class="sb-dash-subtitle">Bienvenido de vuelta a SmartBike UTN</p>
+
+<div class="sb-hero-card">
+    <div class="sb-hero-img"></div>
+    <div class="sb-hero-body">
+        <h4>Movilidad Sostenible UTN</h4>
+        <p>Cada pedalada cuenta. Registra tu traslado de hoy y contribuye a un campus más verde, saludable y sostenible para toda la comunidad universitaria.</p>
+        <button type="button" class="btn sb-btn-solid">
+            <i class="fa-solid fa-bicycle"></i> Registrar transporte diario
+        </button>
+    </div>
+</div>

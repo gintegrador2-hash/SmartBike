@@ -1,0 +1,22 @@
+﻿@model List<SmartBike_MVC.Models.BeneficioViewModel>
+@{
+    ViewData["Title"] = "Beneficios";
+    ViewData["Active"] = "Beneficios";
+    Layout = "_DashboardLayout";
+}
+
+<h2 class="sb-dash-title">Beneficios</h2>
+<p class="sb-dash-subtitle">Descubre por qué SmartBike es la mejor opción para tu movilidad</p>
+
+<div class="row g-4 mt-1">
+    @foreach (var beneficio in Model)
+    {
+        <div class="col-md-6">
+            <div class="sb-benefit-card">
+                <div class="sb-benefit-icon @beneficio.IconoBg"><i class="fa-solid @beneficio.Icono"></i></div>
+                <h5>@beneficio.Titulo</h5>
+                <p>@beneficio.Descripcion</p>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,74 @@
+﻿@model SmartBike_MVC.Models.RegisterViewModel
+@{
+    ViewData["Title"] = "Crear cuenta";
+    Layout = "_AuthLayout";
+}
+
+<div class="sb-auth-brand">
+    <div class="sb-widget-icon sb-auth-icon"><i class="fa-solid fa-bicycle"></i></div>
+    <div class="ms-2">
+        <div class="sb-auth-brand-title">SmartBike</div>
+        <div class="sb-auth-brand-subtitle">Universidad Técnica del Norte</div>
+    </div>
+</div>
+
+<h3 class="sb-auth-heading">Crear cuenta</h3>
+<p class="sb-auth-subheading">Regístrate con tu correo institucional</p>
+
+<form asp-controller="Account" asp-action="Register" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+    <div class="row">
+        <div class="col-6 mb-3">
+            <label asp-for="Nombres" class="form-label"></label>
+            <input asp-for="Nombres" class="form-control" />
+            <span asp-validation-for="Nombres" class="text-danger"></span>
+        </div>
+        <div class="col-6 mb-3">
+            <label asp-for="Apellidos" class="form-label"></label>
+            <input asp-for="Apellidos" class="form-control" />
+            <span asp-validation-for="Apellidos" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CorreoInstitucional" class="form-label"></label>
+        <input asp-for="CorreoInstitucional" class="form-control" placeholder="usuario@utn.edu.ec" />
+        <span asp-validation-for="CorreoInstitucional" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Carrera" class="form-label"></label>
+        <select asp-for="Carrera" class="form-select">
+            <option value="">Seleccione...</option>
+            <option>Ingeniería en Sistemas</option>
+            <option>Ingeniería Industrial</option>
+            <option>Ingeniería Textil</option>
+            <option>Ingeniería en Mecatrónica</option>
+            <option>Contabilidad y Auditoría</option>
+        </select>
+    </div>
+
+    <div class="row">
+        <div class="col-6 mb-3">
+            <label asp-for="Contrasena" class="form-label"></label>
+            <input asp-for="Contrasena" class="form-control" />
+            <span asp-validation-for="Contrasena" class="text-danger"></span>
+        </div>
+        <div class="col-6 mb-3">
+            <label asp-for="ConfirmarContrasena" class="form-label"></label>
+            <input asp-for="ConfirmarContrasena" class="form-control" />
+            <span asp-validation-for="ConfirmarContrasena" class="text-danger"></span>
+        </div>
+    </div>
+
+    <button type="submit" class="btn sb-btn-solid w-100">Crear cuenta</button>
+
+    <p class="text-center mt-3">
+        ¿Ya tienes cuenta? <a asp-controller="Account" asp-action="Login" class="sb-link-green">Iniciar sesión</a>
+    </p>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

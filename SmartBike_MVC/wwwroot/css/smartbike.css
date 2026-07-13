@@ -1,0 +1,703 @@
+﻿:root {
+    --utn-red: #E4032B;
+    --utn-red-dark: #B7021F;
+    --sb-green: #27AE60;
+    --sb-green-dark: #1E8A4C;
+}
+
+/* ---------- Portal UTN ---------- */
+.utn-topbar {
+    background: #1a1a1a;
+    color: #cfcfcf;
+    font-size: .75rem;
+    padding: 6px 16px;
+}
+
+    .utn-topbar i {
+        margin-right: 4px;
+    }
+
+.utn-header {
+    border-bottom: 1px solid #eee;
+    padding: 4px 16px;
+}
+
+.utn-logo {
+    background: var(--utn-red);
+    color: #fff;
+    font-weight: 800;
+    padding: 10px 14px;
+    border-radius: 4px;
+}
+
+.utn-title {
+    font-weight: 700;
+    color: #222;
+    line-height: 1.1;
+}
+
+.utn-subtitle {
+    font-size: .75rem;
+    color: #888;
+}
+
+.utn-nav a {
+    color: #333;
+    font-size: .8rem;
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 18px;
+}
+
+    .utn-nav a:hover {
+        color: var(--utn-red);
+    }
+
+.utn-hero {
+    background: linear-gradient(rgba(20,20,20,.55), rgba(20,20,20,.55)), url('/img/hero-utn.jpg') center/cover no-repeat;
+    color: #fff;
+    padding: 60px 16px;
+    min-height: 380px;
+}
+
+.utn-hero-badge {
+    background: #fff;
+    color: #222;
+    display: inline-block;
+    padding: 12px 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.utn-hero-badge-strong {
+    color: var(--utn-red);
+    font-size: 1.3rem;
+}
+
+.utn-hero-text {
+    max-width: 620px;
+    font-size: 1.05rem;
+}
+
+.utn-btn-red {
+    background: var(--utn-red);
+    color: #fff;
+    font-weight: 700;
+    padding: 10px 24px;
+    border-radius: 2px;
+}
+
+    .utn-btn-red:hover {
+        background: var(--utn-red-dark);
+        color: #fff;
+    }
+
+.utn-btn-red-sm {
+    background: var(--utn-red);
+    color: #fff;
+    font-size: .85rem;
+    padding: 6px 14px;
+}
+
+.utn-quicklinks {
+    background: #f4f4f4;
+    border-top: 1px solid #e2e2e2;
+}
+
+.utn-quicklink {
+    padding: 16px 8px;
+    font-weight: 700;
+    font-size: .85rem;
+    color: #333;
+    cursor: pointer;
+}
+
+    .utn-quicklink i {
+        margin-right: 6px;
+    }
+
+    .utn-quicklink:hover {
+        color: var(--utn-red);
+    }
+
+.utn-section-title {
+    font-weight: 800;
+    border-left: 5px solid var(--utn-red);
+    padding-left: 10px;
+}
+
+.utn-section-subtitle {
+    font-weight: 700;
+    border-left: 4px solid var(--utn-red);
+    padding-left: 10px;
+    margin: 0;
+}
+
+.utn-link-red {
+    color: var(--utn-red);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.utn-card {
+    border: 1px solid #eee;
+    border-radius: 6px;
+    overflow: hidden;
+    height: 100%;
+}
+
+.utn-card-img {
+    height: 160px;
+    background: #ccc;
+}
+
+.utn-card-body {
+    padding: 16px;
+}
+
+.utn-card-date {
+    color: #888;
+    font-size: .8rem;
+}
+
+.utn-card-title {
+    font-weight: 700;
+    margin: 6px 0;
+}
+
+.utn-card-text {
+    color: #666;
+    font-size: .9rem;
+}
+
+.utn-event-card {
+    border: 1px solid #eee;
+    border-radius: 6px;
+    padding: 16px;
+    height: 100%;
+}
+
+.utn-event-date {
+    background: var(--utn-red);
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    padding: 8px 12px;
+    min-width: 60px;
+    height: fit-content;
+}
+
+.utn-event-day {
+    font-size: 1.3rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.utn-event-month {
+    font-size: .75rem;
+}
+
+.utn-footer {
+    background: #1a1a1a;
+    color: #ccc;
+    margin-top: 40px;
+}
+
+/* ---------- Widget SmartBike ---------- */
+.sb-widget-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    background: var(--sb-green);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,.25);
+    cursor: pointer;
+    z-index: 1050;
+}
+
+    .sb-widget-btn:hover {
+        background: var(--sb-green-dark);
+    }
+
+.sb-widget-panel {
+    position: fixed;
+    bottom: 92px;
+    right: 24px;
+    width: 340px;
+    max-width: 90vw;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    overflow: hidden;
+    display: none;
+    z-index: 1050;
+}
+
+    .sb-widget-panel.show {
+        display: block;
+    }
+
+.sb-widget-header {
+    background: var(--sb-green);
+    color: #fff;
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sb-widget-icon {
+    background: rgba(255,255,255,.25);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sb-widget-title {
+    font-weight: 700;
+}
+
+.sb-widget-subtitle {
+    font-size: .75rem;
+    opacity: .9;
+}
+
+.sb-widget-close {
+    cursor: pointer;
+}
+
+.sb-widget-body {
+    padding: 18px 16px;
+}
+
+    .sb-widget-body p {
+        color: #666;
+        font-size: .9rem;
+    }
+
+.sb-btn-solid {
+    background: var(--sb-green);
+    color: #fff;
+    font-weight: 600;
+}
+
+    .sb-btn-solid:hover {
+        background: var(--sb-green-dark);
+        color: #fff;
+    }
+
+.sb-btn-outline {
+    background: #fff;
+    border: 1px solid var(--sb-green);
+    color: var(--sb-green);
+    font-weight: 600;
+}
+
+    .sb-btn-outline:hover {
+        background: #f0fbf4;
+        color: var(--sb-green);
+    }
+
+.sb-btn-light {
+    background: #f2f2f2;
+    color: #333;
+    font-weight: 600;
+}
+
+    .sb-btn-light:hover {
+        background: #e6e6e6;
+        color: #333;
+    }
+
+/* ---------- Auth (Login/Registro) ---------- */
+.sb-auth-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sb-auth-left {
+    flex: 1;
+    background: linear-gradient(135deg, var(--sb-green), var(--sb-green-dark));
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+}
+
+.sb-auth-img {
+    width: 100%;
+    max-width: 420px;
+    height: 220px;
+    background: #ccc url('/img/bikes.jpg') center/cover;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
+
+.sb-auth-left h2 {
+    font-weight: 800;
+}
+
+.sb-auth-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 60px;
+    max-width: 560px;
+}
+
+.sb-auth-back {
+    color: #888;
+    text-decoration: none;
+    font-size: .85rem;
+    margin-bottom: 24px;
+}
+
+.sb-auth-brand {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.sb-auth-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 1.3rem;
+}
+
+.sb-auth-brand-title {
+    font-weight: 800;
+}
+
+.sb-auth-brand-subtitle {
+    font-size: .8rem;
+    color: #888;
+}
+
+.sb-auth-heading {
+    font-weight: 800;
+}
+
+.sb-auth-subheading {
+    color: #888;
+    margin-bottom: 24px;
+}
+
+.sb-link-green {
+    color: var(--sb-green);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+@media (max-width: 900px) {
+    .sb-auth-wrapper {
+        flex-direction: column;
+    }
+}
+
+/* ---------- Dashboard ---------- */
+.sb-dash-body {
+    background: #f7f8fa;
+}
+
+.sb-dash-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sb-sidebar {
+    width: 260px;
+    background: #fff;
+    border-right: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+    flex-shrink: 0;
+}
+
+.sb-sidebar-brand {
+    display: flex;
+    align-items: center;
+    padding: 0 20px 20px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 12px;
+}
+
+.sb-sidebar-title {
+    font-weight: 800;
+}
+
+.sb-sidebar-subtitle {
+    font-size: .75rem;
+    color: #888;
+}
+
+.sb-sidebar-nav {
+    flex: 1;
+    padding: 0 12px;
+}
+
+.sb-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    color: #444;
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: 4px;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+}
+
+    .sb-nav-item:hover {
+        background: #f0fbf4;
+        color: var(--sb-green-dark);
+    }
+
+    .sb-nav-item.active {
+        background: var(--sb-green);
+        color: #fff;
+    }
+
+.sb-sidebar-logout {
+    padding: 0 12px;
+}
+
+.sb-nav-logout {
+    color: #d9534f;
+}
+
+    .sb-nav-logout:hover {
+        background: #fdecea;
+        color: #d9534f;
+    }
+
+.sb-dash-content {
+    flex: 1;
+    padding: 40px;
+}
+
+.sb-dash-title {
+    font-weight: 800;
+}
+
+.sb-dash-subtitle {
+    color: #888;
+}
+
+.sb-hero-card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,.05);
+    margin-top: 20px;
+    max-width: 760px;
+}
+
+.sb-hero-img {
+    height: 220px;
+    background: #ccc url('/img/bikes.jpg') center/cover;
+}
+
+.sb-hero-body {
+    padding: 24px;
+}
+
+    .sb-hero-body p {
+        color: #666;
+    }
+
+.sb-benefit-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 24px;
+    height: 100%;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+
+.sb-benefit-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    margin-bottom: 14px;
+}
+
+.sb-icon-red {
+    background: #fde8e8;
+    color: #e0575b;
+}
+
+.sb-icon-green {
+    background: #e3f7e9;
+    color: var(--sb-green);
+}
+
+.sb-icon-yellow {
+    background: #fdf3d9;
+    color: #e0a82e;
+}
+
+.sb-icon-blue {
+    background: #e3edfd;
+    color: #3b82f6;
+}
+
+.sb-benefit-card p {
+    color: #666;
+    font-size: .9rem;
+}
+
+.sb-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.sb-chip {
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: .85rem;
+    cursor: pointer;
+}
+
+    .sb-chip:hover {
+        border-color: var(--sb-green);
+        color: var(--sb-green-dark);
+    }
+
+.sb-chat-box {
+    background: #fff;
+    border-radius: 10px;
+    min-height: 400px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+
+.sb-chat-msg {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.sb-chat-user {
+    flex-direction: row-reverse;
+}
+
+.sb-chat-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: .9rem;
+    flex-shrink: 0;
+}
+
+.sb-chat-bubble {
+    background: #f2f2f2;
+    border-radius: 10px;
+    padding: 10px 14px;
+    max-width: 70%;
+}
+
+.sb-chat-user .sb-chat-bubble {
+    background: var(--sb-green);
+    color: #fff;
+}
+
+.sb-chat-input-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.sb-chat-send {
+    width: 48px;
+}
+
+.sb-fact-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 24px;
+    height: 100%;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+
+.sb-fact-icon {
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+}
+
+.sb-fact-card p {
+    color: #666;
+    font-size: .9rem;
+}
+
+.sb-profile-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 28px;
+    max-width: 620px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+
+.sb-profile-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--sb-green);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.3rem;
+}
+
+.sb-profile-name {
+    font-weight: 800;
+}
+
+.sb-profile-meta {
+    color: #888;
+    font-size: .9rem;
+}
+
+.sb-profile-option {
+    display: block;
+    padding: 12px 0;
+    color: #333;
+    text-decoration: none;
+    font-weight: 600;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+}
+
+.sb-profile-danger {
+    color: #d9534f;
+}
