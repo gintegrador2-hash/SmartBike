@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartBike_MVC.Models;
-using Consumer; // Referencia a tu ApiService
-using System.Threading.Tasks; // Necesario para los métodos asíncronos
-using System.Linq; // Necesario para usar Select en el Perfil
+using Consumer;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace SmartBike_MVC.Controllers
 {
@@ -12,26 +12,22 @@ namespace SmartBike_MVC.Controllers
     {
         private readonly ApiService _apiService;
 
-        // INYECTAMOS EL APISERVICE AQUÍ
         public DashboardController(ApiService apiService)
         {
             _apiService = apiService;
         }
 
-        // --- 1. VISTA PRINCIPAL (Lógica del CO2 y límite diario por usuario) ---
         public async Task<IActionResult> Index()
         {
             var correoOIdentificador = User.Identity?.Name ?? "desconocido";
             var nombre = correoOIdentificador.Split(' ')[0];
 
-            // Creamos "llaves" únicas usando el nombre/correo del usuario actual
             string llaveRegistro = $"YaRegistro_{correoOIdentificador}";
             string llaveCo2 = $"Co2Hoy_{correoOIdentificador}";
 
-            // El sistema ahora busca específicamente si ESTE usuario ya registró
             bool yaRegistroHoy = TempData.Peek(llaveRegistro) != null;
             int co2EvitadoHoy = TempData.Peek(llaveCo2) != null ? System.Convert.ToInt32(TempData.Peek(llaveCo2)) : 0;
-            int co2EvitadoAyer = 300; // Valor simulado del día de ayer
+            int co2EvitadoAyer = 300;
 
             string mensajeComparacion = "";
             if (yaRegistroHoy)
@@ -51,7 +47,6 @@ namespace SmartBike_MVC.Controllers
             return View(new InicioViewModel { NombreUsuario = nombre });
         }
 
-        // --- 2. ACCIÓN PARA GUARDAR EL VIAJE EN BD ---
         [HttpPost]
         public async Task<IActionResult> RegistrarViaje(string transporte, string distancia)
         {
@@ -59,7 +54,6 @@ namespace SmartBike_MVC.Controllers
             string llaveRegistro = $"YaRegistro_{correoOIdentificador}";
             string llaveCo2 = $"Co2Hoy_{correoOIdentificador}";
 
-            // Validamos con la llave única para que no haga trampa ni bloquee a otros
             if (TempData.Peek(llaveRegistro) != null)
             {
                 return RedirectToAction("Index");
@@ -80,29 +74,12 @@ namespace SmartBike_MVC.Controllers
                 co2Evitado = (int)(km * 150);
             }
 
-            // =========================================================
-            // GUARDADO REAL EN LA BASE DE DATOS (Descomenta cuando tu API esté lista)
-            // =========================================================
-            /*
-            var nuevoViaje = new {
-                UsuarioCorreo = correoOIdentificador,
-                TipoTransporte = transporte,
-                DistanciaKm = distancia,
-                Co2Evitado = co2Evitado,
-                FechaRegistro = System.DateTime.Now
-            };
-            
-            await _apiService.PostAsync("api/Viajes", nuevoViaje);
-            */
-
-            // Variables temporales atadas al usuario específico
             TempData[llaveCo2] = co2Evitado;
             TempData[llaveRegistro] = true;
 
             return RedirectToAction("Index");
         }
 
-        // --- 3. NUEVA VISTA DE ESTACIONAMIENTOS ---
         public IActionResult Estacionamientos()
         {
             return View();
@@ -112,14 +89,10 @@ namespace SmartBike_MVC.Controllers
         {
             var model = new List<BeneficioViewModel>
             {
-                new() { Icono = "fa-heart", IconoBg = "sb-icon-red", Titulo = "Salud Cardiovascular",
-                        Descripcion = "Pedalear 30 minutos diarios reduce el riesgo de enfermedades cardíacas hasta en un 50% y mejora notablemente tu bienestar físico y mental." },
-                new() { Icono = "fa-leaf", IconoBg = "sb-icon-green", Titulo = "Reducción de CO₂",
-                        Descripcion = "Cada kilómetro en bicicleta evita aproximadamente 150 g de CO₂. Tus recorridos tienen un impacto real y medible en el medio ambiente." },
-                new() { Icono = "fa-bolt", IconoBg = "sb-icon-yellow", Titulo = "Movilidad Sostenible",
-                        Descripcion = "La bicicleta es el medio de transporte más eficiente del campus. Ahorra tiempo, evita el tráfico y llega siempre fresco a clases." },
-                new() { Icono = "fa-dollar-sign", IconoBg = "sb-icon-blue", Titulo = "Ahorro Económico",
-                        Descripcion = "Usar la bicicleta puede suponer un ahorro de hasta $50 mensuales en transporte público y combustible a lo largo del semestre." },
+                new() { Icono = "fa-heart", IconoBg = "sb-icon-red", Titulo = "Salud Cardiovascular", Descripcion = "Pedalear 30 minutos diarios reduce el riesgo de enfermedades cardíacas..." },
+                new() { Icono = "fa-leaf", IconoBg = "sb-icon-green", Titulo = "Reducción de CO₂", Descripcion = "Cada kilómetro en bicicleta evita aproximadamente 150 g de CO₂..." },
+                new() { Icono = "fa-bolt", IconoBg = "sb-icon-yellow", Titulo = "Movilidad Sostenible", Descripcion = "La bicicleta es el medio de transporte más eficiente del campus..." },
+                new() { Icono = "fa-dollar-sign", IconoBg = "sb-icon-blue", Titulo = "Ahorro Económico", Descripcion = "Usar la bicicleta puede suponer un ahorro de hasta $50 mensuales..." },
             };
             return View(model);
         }
@@ -147,12 +120,12 @@ namespace SmartBike_MVC.Controllers
         {
             var model = new List<DatoCuriosoViewModel>
             {
-                new() { Icono = "🌿", Titulo = "Cero Emisiones", Descripcion = "Una bicicleta genera 0 g de CO₂ durante su uso. Si 500 estudiantes de la UTN pedalean 1 km diario, se evitan ¡75 kg de emisiones contaminantes al día!" },
-                new() { Icono = "❤️", Titulo = "Corazón más fuerte", Descripcion = "Pedalear activa el 80 % de los músculos del cuerpo. Hacerlo durante un semestre puede mejorar tu capacidad cardiovascular hasta en un 15 %." },
-                new() { Icono = "🏛️", Titulo = "Campus más verde", Descripcion = "Cada recorrido que registras en SmartBike contribuye al índice de sostenibilidad de la UTN. ¡Juntos construimos un campus modelo en Ecuador!" },
-                new() { Icono = "⚡", Titulo = "Velocidad ideal", Descripcion = "La velocidad promedio en bicicleta dentro de un campus es de 15 km/h — perfecta para llegar a tiempo entre edificios sin estrés." },
-                new() { Icono = "💰", Titulo = "Ahorra mientras pedaleas", Descripcion = "Un estudiante puede ahorrar hasta $600 al año usando bicicleta en lugar de transporte pagado para sus traslados diarios." },
-                new() { Icono = "🌍", Titulo = "Impacto global", Descripcion = "Si todos los estudiantes de Ecuador pedalearan a la universidad, se evitarían más de 500 toneladas de CO₂ al año. ¡Pequeños cambios, gran impacto!" },
+                new() { Icono = "🌿", Titulo = "Cero Emisiones", Descripcion = "Una bicicleta genera 0 g de CO₂ durante su uso..." },
+                new() { Icono = "❤️", Titulo = "Corazón más fuerte", Descripcion = "Pedalear activa el 80 % de los músculos del cuerpo..." },
+                new() { Icono = "🏛️", Titulo = "Campus más verde", Descripcion = "Cada recorrido que registras en SmartBike contribuye al índice de sostenibilidad..." },
+                new() { Icono = "⚡", Titulo = "Velocidad ideal", Descripcion = "La velocidad promedio en bicicleta dentro de un campus es de 15 km/h..." },
+                new() { Icono = "💰", Titulo = "Ahorra mientras pedaleas", Descripcion = "Un estudiante puede ahorrar hasta $600 al año usando bicicleta..." },
+                new() { Icono = "🌍", Titulo = "Impacto global", Descripcion = "Si todos los estudiantes de Ecuador pedalearan a la universidad..." },
             };
             return View(model);
         }
@@ -175,6 +148,45 @@ namespace SmartBike_MVC.Controllers
         public IActionResult Configuracion()
         {
             return View();
+        }
+
+        // =======================================================
+        // NUEVO MÉTODO PARA CONECTAR CON N8N
+        // =======================================================
+        [HttpPost]
+        public async Task<IActionResult> EnviarMensajeN8N([FromBody] string mensajeUsuario)
+        {
+            if (string.IsNullOrEmpty(mensajeUsuario)) return BadRequest("Mensaje vacío");
+
+            // URL exacta de tu webhook en n8n
+            string webhookUrl = "https://anzbsx.app.n8n.cloud/webhook/smartbot-chat";
+
+            var payload = new
+            {
+                mensaje = mensajeUsuario,
+                usuario = User.Identity?.Name ?? "Estudiante"
+            };
+
+            using var httpClient = new System.Net.Http.HttpClient();
+            var content = new System.Net.Http.StringContent(
+                System.Text.Json.JsonSerializer.Serialize(payload),
+                System.Text.Encoding.UTF8,
+                "application/json"
+            );
+
+            try
+            {
+                // Disparamos la petición a n8n
+                var response = await httpClient.PostAsync(webhookUrl, content);
+                var jsonRespuesta = await response.Content.ReadAsStringAsync();
+
+                // Devolvemos el JSON de n8n a la vista
+                return Content(jsonRespuesta, "application/json");
+            }
+            catch (System.Exception)
+            {
+                return Json(new { respuesta = "Error de conexión con SmartBot. Revisa que n8n esté activo." });
+            }
         }
     }
 }

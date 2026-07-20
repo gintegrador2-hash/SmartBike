@@ -5,6 +5,35 @@
     Layout = "_DashboardLayout";
 }
 
+<style>
+    /* --- ANIMACIÓN DE PENSANDO --- */
+    .typing-indicator {
+        display: inline-flex;
+        align-items: center;
+        height: 24px;
+        padding: 0 5px;
+    }
+
+    .typing-indicator span {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background-color: #90949c;
+        border-radius: 50%;
+        margin: 0 2px;
+        animation: typing 1.4s infinite both;
+    }
+
+    .typing-indicator span:nth-child(1) { animation-delay: 0s; }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    @@keyframes typing {
+        0%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-5px); }
+    }
+</style>
+
 <h2 class="sb-dash-title">Preguntas Frecuentes</h2>
 <p class="sb-dash-subtitle">Habla con SmartBot, nuestro asistente virtual</p>
 
@@ -35,6 +64,7 @@
 
 @section Scripts {
     <script>
+        // Función clásica para agregar mensajes normales
         function agregarMensaje(texto, esUsuario) {
             const box = document.getElementById('sbChatBox');
             const div = document.createElement('div');
@@ -45,36 +75,78 @@
             box.scrollTop = box.scrollHeight;
         }
 
-        // Lógica de respuestas del Bot
-        function obtenerRespuestaBot(pregunta) {
-            const texto = pregunta.toLowerCase().trim();
-
-            if (texto.includes("dónde puedo estacionar") || texto.includes("donde puedo estacionar")) {
-                return "Contamos con zonas seguras de estacionamiento (bicicleteros) ubicados estratégicamente cerca de las facultades principales y el edificio central del campus.";
+        // Efecto visual de escribir letra por letra
+        function efectoMaquinaDeEscribir(texto, elementoDestino, velocidad = 20) {
+            let i = 0;
+            elementoDestino.innerHTML = "";
+            
+            function escribir() {
+                if (i < texto.length) {
+                    if(texto.charAt(i) === '\n') {
+                        elementoDestino.innerHTML += '<br>';
+                    } else {
+                        elementoDestino.innerHTML += texto.charAt(i);
+                    }
+                    i++;
+                    setTimeout(escribir, velocidad);
+                    // Hacer scroll mientras escribe
+                    const box = document.getElementById('sbChatBox');
+                    box.scrollTop = box.scrollHeight;
+                }
             }
-            else if (texto.includes("registrar un recorrido")) {
-                return "Es muy fácil. Solo debes ingresar al sistema con tu cuenta institucional, ir a la sección 'Registrar Viaje', y guardar los detalles de tu recorrido para sumar kilómetros.";
-            }
-            else if (texto.includes("beneficios obtengo")) {
-                return "Además de mejorar tu salud física, contribuyes a reducir las emisiones de CO₂. El sistema guardará tus estadísticas e impulsará el programa de sostenibilidad del campus.";
-            }
-            else if (texto.includes("funciona smartbike")) {
-                return "SmartBike UTN es una iniciativa de movilidad sostenible. Te registras, usas tu bicicleta para venir al campus, anotas tus viajes y nosotros medimos tu impacto positivo en el planeta.";
-            }
-            else {
-                return "¡Hola! Soy SmartBot 🤖, el asistente virtual de SmartBike. Aún estoy aprendiendo a responder preguntas complejas. Si tu duda es muy específica, un administrador del sistema se comunicará contigo pronto a tu correo institucional.";
-            }
+            escribir();
         }
 
-        function procesarPregunta(texto) {
+        async function procesarPregunta(texto) {
+            const box = document.getElementById('sbChatBox');
+            
             // 1. Mostrar pregunta del usuario
             agregarMensaje(texto, true);
             
-            // 2. Simular un indicador de "escribiendo..." o retardo natural del bot
-            setTimeout(() => {
-                const respuesta = obtenerRespuestaBot(texto);
-                agregarMensaje(respuesta, false);
-            }, 650); // 650ms de retardo para que se sienta más humano
+            // 2. Mostrar burbuja de "pensando..."
+            const idPensando = "pensando-" + Date.now();
+            const divPensando = document.createElement('div');
+            divPensando.id = idPensando;
+            divPensando.className = 'sb-chat-msg sb-chat-bot';
+            divPensando.innerHTML = '<div class="sb-widget-icon sb-chat-avatar"><i class="fa-solid fa-robot"></i></div>'
+                + '<div class="sb-chat-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';
+            box.appendChild(divPensando);
+            box.scrollTop = box.scrollHeight;
+            
+            try {
+                // 3. Llamar a nuestro controlador C#
+                const respuesta = await fetch('/Dashboard/EnviarMensajeN8N', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(texto)
+                });
+
+                const datos = await respuesta.json();
+                
+                // 4. Eliminar la burbuja de "pensando..."
+                document.getElementById(idPensando).remove();
+                
+                // 5. Mostrar la respuesta con el efecto de escritura
+                if(datos && datos.respuesta) {
+                    const idRespuesta = "respuesta-" + Date.now();
+                    const divRespuesta = document.createElement('div');
+                    divRespuesta.className = 'sb-chat-msg sb-chat-bot';
+                    divRespuesta.innerHTML = '<div class="sb-widget-icon sb-chat-avatar"><i class="fa-solid fa-robot"></i></div>'
+                        + '<div class="sb-chat-bubble" id="' + idRespuesta + '"></div>';
+                    
+                    box.appendChild(divRespuesta);
+                    
+                    // Lanzar la magia
+                    efectoMaquinaDeEscribir(datos.respuesta, document.getElementById(idRespuesta));
+                } else {
+                    agregarMensaje("n8n recibió el mensaje, pero no devolvió el formato JSON correcto.", false);
+                }
+                
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById(idPensando)?.remove();
+                agregarMensaje("Hubo un problema de conexión con el servidor.", false);
+            }
         }
 
         function enviarPreguntaSugerida(btn) {
