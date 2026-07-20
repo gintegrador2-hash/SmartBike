@@ -1,8 +1,10 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 COPY . .
-# Publicamos solo el proyecto del MVC
-RUN dotnet publish "SmartBike_MVC.csproj" -c Release -o out
+
+# Ajuste: Buscar el csproj dentro de la carpeta actual (que ya es SmartBike_MVC)
+# Si tu .csproj está en la raíz de esta carpeta, este comando debería funcionar:
+RUN dotnet publish -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
