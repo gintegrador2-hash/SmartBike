@@ -4,8 +4,8 @@ COPY . .
 # Publicamos solo el proyecto del API
 # Cambia tu línea 5 por estas dos líneas:
 RUN ls -R
-RUN dotnet publish "SmartBike_API.csproj" -c Release -o out
-
+# Cambia esta línea:
+RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app/out .
