@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Conócenos";
+    Layout = "_PortalLayout";
+}
+
+<div class="container py-5">
+    <div class="row align-items-center mb-5 mt-4">
+        <div class="col-md-6">
+            <h2 class="utn-section-title mb-4">¿Qué es SmartBike UTN?</h2>
+            <p class="lead text-muted">Es una iniciativa integral para transformar la movilidad en nuestro campus universitario y fomentar un estilo de vida saludable.</p>
+            <p>
+                A través de esta plataforma, los estudiantes, docentes y personal administrativo pueden registrar sus viajes diarios en bicicleta.
+                El sistema calcula automáticamente los kilómetros recorridos, las calorías quemadas, el ahorro económico
+                frente al transporte público y, lo más importante, <strong>los kilogramos de CO₂ que evitamos emitir</strong> al medio ambiente.
+            </p>
+            
+            <a asp-controller="Home" asp-action="Index" class="btn sb-btn-outline mt-3">
+                <i class="fa-solid fa-arrow-left me-2"></i> Volver a la página principal
+            </a>
+        </div>
+        <div class="col-md-6 text-center mt-4 mt-md-0">
+            <img src="/img/Bisi.jpeg" alt="Conócenos SmartBike" class="img-fluid rounded shadow" style="max-height: 350px; object-fit: cover; width: 100%;" />
+        </div>
+    </div>
+    
+    <div class="row g-4 mt-4 mb-5">
+        <div class="col-md-4">
+            <div class="sb-benefit-card text-center shadow-sm">
+                <div class="sb-benefit-icon sb-icon-green mx-auto"><i class="fa-solid fa-leaf"></i></div>
+                <h5>Sostenibilidad</h5>
+                <p class="mb-0">Fomentamos un campus libre de humo y ruido, alineado con los Objetivos de Desarrollo Sostenible (ODS).</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="sb-benefit-card text-center shadow-sm">
+                <div class="sb-benefit-icon sb-icon-red mx-auto"><i class="fa-solid fa-heart-pulse"></i></div>
+                <h5>Salud Integral</h5>
+                <p class="mb-0">Promovemos la actividad física diaria, reduciendo el estrés y mejorando el rendimiento académico.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="sb-benefit-card text-center shadow-sm">
+                <div class="sb-benefit-icon sb-icon-blue mx-auto"><i class="fa-solid fa-bicycle"></i></div>
+                <h5>Infraestructura</h5>
+                <p class="mb-0">Gestionamos los estacionamientos (bicicleteros) seguros dentro del campus en tiempo real para tu tranquilidad.</p>
+            </div>
+        </div>
+    </div>
+</div>

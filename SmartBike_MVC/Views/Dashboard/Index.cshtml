@@ -1,20 +1,133 @@
 ﻿@model SmartBike_MVC.Models.InicioViewModel
 @{
-    ViewData["Title"] = "Inicio";
+    ViewData["Title"] = "Dashboard";
     ViewData["Active"] = "Inicio";
     Layout = "_DashboardLayout";
 }
 
-<h2 class="sb-dash-title">¡Hola, @Model.NombreUsuario! 👋</h2>
-<p class="sb-dash-subtitle">Bienvenido de vuelta a SmartBike UTN</p>
+<style>
+    :root {
+        --f-primary: #2E7D46;
+        --f-primary-light: #EAF4EC;
+        --f-primary-dark: #1E5B3A;
+        --f-border: #E2E5E1;
+        --f-text: #1A1A1A;
+        --f-text-sec: #6B7280;
+    }
 
-<div class="sb-hero-card">
-    <div class="sb-hero-img"></div>
-    <div class="sb-hero-body">
-        <h4>Movilidad Sostenible UTN</h4>
-        <p>Cada pedalada cuenta. Registra tu traslado de hoy y contribuye a un campus más verde, saludable y sostenible para toda la comunidad universitaria.</p>
-        <button type="button" class="btn sb-btn-solid">
-            <i class="fa-solid fa-bicycle"></i> Registrar transporte diario
-        </button>
+    .figma-trans-card { border: 1px solid var(--f-border); border-radius: 12px; padding: 24px 16px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 12px; background-color: white; transition: all 0.15s ease; height: 100%; }
+    .figma-trans-card.selected { background-color: var(--f-primary); border-color: var(--f-primary); }
+    .figma-trans-card .icon-wrapper { width: 52px; height: 52px; border-radius: 50%; background-color: var(--f-primary-light); display: flex; align-items: center; justify-content: center; color: var(--f-primary); font-size: 24px; transition: all 0.15s ease; }
+    .figma-trans-card.selected .icon-wrapper { background-color: rgba(255,255,255,0.18); color: white; }
+    .figma-trans-card .trans-label { font-size: 14px; font-weight: 600; color: var(--f-text); }
+    .figma-trans-card.selected .trans-label { color: white; }
+
+    .figma-dist-pill { padding: 8px 20px; border-radius: 20px; border: 1px solid var(--f-border); background-color: white; color: var(--f-text-sec); font-weight: 400; font-size: 14px; cursor: pointer; transition: all 0.15s ease; }
+    .figma-dist-pill.selected { background-color: var(--f-primary-light); border-color: var(--f-primary); color: var(--f-primary-dark); font-weight: 700; }
+
+    .figma-submit-btn { width: 100%; padding: 14px; background-color: white; border: 1px solid var(--f-border); border-radius: 8px; font-size: 15px; font-weight: 600; color: var(--f-text); transition: all 0.2s ease; }
+    .figma-submit-btn:hover { background-color: #f9f9f9; border-color: #d0d0d0; }
+
+    .figma-result-card { background-color: var(--f-primary-light); border: 1px solid rgba(46, 125, 70, 0.25); border-radius: 12px; padding: 20px 24px; display: flex; align-items: center; gap: 16px; }
+    .figma-result-icon { width: 48px; height: 48px; border-radius: 50%; background-color: white; display: flex; align-items: center; justify-content: center; color: var(--f-primary); font-size: 22px; }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 style="font-size: 24px; font-weight: 700; color: var(--f-text); margin-bottom: 4px;">Hola, @Model.NombreUsuario</h2>
+        
+        @if (!ViewBag.YaRegistroHoy)
+        {
+            <p style="font-size: 14px; color: var(--f-text-sec); margin: 0;">¿Cómo llegaste hoy al campus?</p>
+        }
+        else
+        {
+            <p style="font-size: 14px; color: var(--f-text-sec); margin: 0;">¡Ya registraste tu movilidad de hoy!</p>
+        }
     </div>
 </div>
+
+<div style="max-width: 800px;">
+    
+    @if (!ViewBag.YaRegistroHoy)
+    {
+        <form asp-controller="Dashboard" asp-action="RegistrarViaje" method="post">
+            <input type="hidden" id="transporteSeleccionado" name="transporte" value="bike" />
+            <input type="hidden" id="distanciaSeleccionada" name="distancia" value="2-5" />
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-4 col-12">
+                    <div class="figma-trans-card selected" id="btn-bike" onclick="seleccionarTransporte('bike')">
+                        <div class="icon-wrapper"><i class="fa-solid fa-bicycle"></i></div>
+                        <span class="trans-label">Bicicleta</span>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="figma-trans-card" id="btn-walk" onclick="seleccionarTransporte('walk')">
+                        <div class="icon-wrapper"><i class="fa-solid fa-heart-pulse"></i></div>
+                        <span class="trans-label">Caminando</span>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="figma-trans-card" id="btn-car" onclick="seleccionarTransporte('car')">
+                        <div class="icon-wrapper"><i class="fa-solid fa-car"></i></div>
+                        <span class="trans-label">Carro</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                <button type="button" class="figma-dist-pill" id="dist-<2" onclick="seleccionarDistancia('<2')">&lt; 2 km</button>
+                <button type="button" class="figma-dist-pill selected" id="dist-2-5" onclick="seleccionarDistancia('2-5')">2-5 km</button>
+                <button type="button" class="figma-dist-pill" id="dist-5-10" onclick="seleccionarDistancia('5-10')">5-10 km</button>
+                <button type="button" class="figma-dist-pill" id="dist->10" onclick="seleccionarDistancia('>10')">&gt; 10 km</button>
+            </div>
+
+            <button type="submit" class="figma-submit-btn mb-4">
+                Registrar transporte diario
+            </button>
+        </form>
+    }
+    else
+    {
+        <div class="figma-result-card shadow-sm mb-4">
+            <div class="figma-result-icon">
+                <i class="fa-solid fa-leaf"></i>
+            </div>
+            <div>
+                <h5 style="font-size: 16px; font-weight: 700; color: var(--f-primary-dark); margin-bottom: 4px;">
+                    Evitaste @ViewBag.Co2Hoy g de CO₂ hoy
+                </h5>
+                <p style="font-size: 13px; color: var(--f-text-sec); margin: 0;">
+                    @ViewBag.MensajeComparacion
+                </p>
+            </div>
+        </div>
+        
+        <div style="background-color: white; border: 1px solid var(--f-border); border-radius: 12px; padding: 24px; text-align: center;">
+            <i class="fa-regular fa-clock text-muted fs-3 mb-2"></i>
+            <h6 class="fw-bold mb-1">¡Registro completado!</h6>
+            <p class="text-muted small mb-0">Vuelve mañana para seguir sumando kilómetros sostenibles en tu perfil de SmartBike.</p>
+        </div>
+    }
+
+</div>
+
+@section Scripts {
+    <script>
+        function seleccionarTransporte(tipo) {
+            document.getElementById('transporteSeleccionado').value = tipo;
+            document.getElementById('btn-bike').classList.remove('selected');
+            document.getElementById('btn-walk').classList.remove('selected');
+            document.getElementById('btn-car').classList.remove('selected');
+            document.getElementById('btn-' + tipo).classList.add('selected');
+        }
+
+        function seleccionarDistancia(distancia) {
+            document.getElementById('distanciaSeleccionada').value = distancia;
+            const botones = document.querySelectorAll('.figma-dist-pill');
+            botones.forEach(b => b.classList.remove('selected'));
+            document.getElementById('dist-' + distancia).classList.add('selected');
+        }
+    </script>
+}

@@ -42,12 +42,16 @@
         <h5 class="utn-section-subtitle">Últimas Noticias</h5>
         <a href="#" class="utn-link-red">Ver todas →</a>
     </div>
+    
     <div class="row g-4">
+        @{
+            int numFoto = 1;
+        }
         @foreach (var noticia in Model.Noticias)
         {
             <div class="col-md-4">
                 <div class="utn-card">
-                    <div class="utn-card-img"></div>
+                    <div class="utn-card-img" style="background: url('/img/noticia@(numFoto).jpg') center/cover no-repeat;"></div>
                     <div class="utn-card-body">
                         <div class="utn-card-date">@noticia.Fecha</div>
                         <div class="utn-card-title">@noticia.Titulo</div>
@@ -56,6 +60,7 @@
                     </div>
                 </div>
             </div>
+            numFoto++;
         }
     </div>
 
@@ -63,6 +68,7 @@
         <h5 class="utn-section-subtitle">Próximos Eventos</h5>
         <a href="#" class="utn-link-red">Ver todos →</a>
     </div>
+    
     <div class="row g-4">
         @foreach (var evento in Model.Eventos)
         {
@@ -79,14 +85,5 @@
                 </div>
             </div>
         }
-    </div>
-
-    <div id="conocenos" class="utn-about mt-5">
-        <h5 class="utn-section-subtitle">Conócenos: SmartBike UTN</h5>
-        <p class="utn-card-text">
-            SmartBike UTN es la plataforma de movilidad sostenible del campus: registra tus
-            recorridos en bicicleta, consulta estacionamientos disponibles y reduce tu huella de
-            carbono mientras te mueves entre facultades.
-        </p>
     </div>
 </div>

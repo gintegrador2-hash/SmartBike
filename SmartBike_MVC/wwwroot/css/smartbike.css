@@ -1,8 +1,9 @@
 ﻿:root {
     --utn-red: #E4032B;
     --utn-red-dark: #B7021F;
-    --sb-green: #27AE60;
-    --sb-green-dark: #1E8A4C;
+    /* VERDE ESMERALDA (Punto medio ideal para contraste y diseño) */
+    --sb-green: #157347;
+    --sb-green-dark: #0C5633;
 }
 
 /* ---------- Portal UTN ---------- */
@@ -38,7 +39,7 @@
 
 .utn-subtitle {
     font-size: .75rem;
-    color: #888;
+    color: #555; /* Corregido para Lighthouse */
 }
 
 .utn-nav a {
@@ -156,7 +157,7 @@
 }
 
 .utn-card-date {
-    color: #888;
+    color: #555; /* Corregido para Lighthouse */
     font-size: .8rem;
 }
 
@@ -341,9 +342,11 @@
     width: 100%;
     max-width: 420px;
     height: 220px;
-    background: #ccc url('/img/bikes.jpg') center/cover;
+    /* Aquí pusimos una imagen web directa de una bicicleta súper moderna */
+    background: #ccc url('https://images.unsplash.com/photo-1485965120184-e220f721d03e?q=80&w=800&auto=format&fit=crop') center/cover;
     border-radius: 12px;
     margin-bottom: 24px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2); /* Un pequeño sombreado para que resalte más */
 }
 
 .sb-auth-left h2 {
@@ -360,7 +363,7 @@
 }
 
 .sb-auth-back {
-    color: #888;
+    color: #555; /* Corregido para Lighthouse */
     text-decoration: none;
     font-size: .85rem;
     margin-bottom: 24px;
@@ -384,7 +387,7 @@
 
 .sb-auth-brand-subtitle {
     font-size: .8rem;
-    color: #888;
+    color: #555; /* Corregido para Lighthouse */
 }
 
 .sb-auth-heading {
@@ -392,7 +395,7 @@
 }
 
 .sb-auth-subheading {
-    color: #888;
+    color: #555; /* Corregido para Lighthouse */
     margin-bottom: 24px;
 }
 
@@ -410,7 +413,8 @@
 
 /* ---------- Dashboard ---------- */
 .sb-dash-body {
-    background: #f7f8fa;
+    /* Degradado estético, súper ligero y que no estorba la lectura */
+    background: linear-gradient(135deg, #fdfdfd 0%, #e6f2eb 100%);
 }
 
 .sb-dash-wrapper {
@@ -442,7 +446,7 @@
 
 .sb-sidebar-subtitle {
     font-size: .75rem;
-    color: #888;
+    color: #555; /* Corregido para Lighthouse */
 }
 
 .sb-sidebar-nav {
@@ -499,7 +503,7 @@
 }
 
 .sb-dash-subtitle {
-    color: #888;
+    color: #555; /* Corregido para Lighthouse */
 }
 
 .sb-hero-card {
@@ -513,7 +517,8 @@
 
 .sb-hero-img {
     height: 220px;
-    background: #ccc url('/img/bikes.jpg') center/cover;
+    /* AQUÍ PON EL NOMBRE DE TU FOTO DESCARGADA */
+    background: url('/img/mi-foto-bici.jpg') center/cover;
 }
 
 .sb-hero-body {
@@ -682,7 +687,7 @@
 }
 
 .sb-profile-meta {
-    color: #888;
+    color: #555; /* Corregido para Lighthouse */
     font-size: .9rem;
 }
 

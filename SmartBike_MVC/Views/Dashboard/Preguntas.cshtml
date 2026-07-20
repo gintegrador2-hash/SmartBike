@@ -29,7 +29,7 @@
 </div>
 
 <form class="sb-chat-input-row" id="sbChatForm">
-    <input type="text" id="sbChatInput" class="form-control" placeholder="Escribe tu pregunta..." />
+    <input type="text" id="sbChatInput" class="form-control" placeholder="Escribe tu pregunta..." autocomplete="off" />
     <button type="submit" class="btn sb-btn-solid sb-chat-send"><i class="fa-solid fa-paper-plane"></i></button>
 </form>
 
@@ -45,18 +45,51 @@
             box.scrollTop = box.scrollHeight;
         }
 
+        // Lógica de respuestas del Bot
+        function obtenerRespuestaBot(pregunta) {
+            const texto = pregunta.toLowerCase().trim();
+
+            if (texto.includes("dónde puedo estacionar") || texto.includes("donde puedo estacionar")) {
+                return "Contamos con zonas seguras de estacionamiento (bicicleteros) ubicados estratégicamente cerca de las facultades principales y el edificio central del campus.";
+            }
+            else if (texto.includes("registrar un recorrido")) {
+                return "Es muy fácil. Solo debes ingresar al sistema con tu cuenta institucional, ir a la sección 'Registrar Viaje', y guardar los detalles de tu recorrido para sumar kilómetros.";
+            }
+            else if (texto.includes("beneficios obtengo")) {
+                return "Además de mejorar tu salud física, contribuyes a reducir las emisiones de CO₂. El sistema guardará tus estadísticas e impulsará el programa de sostenibilidad del campus.";
+            }
+            else if (texto.includes("funciona smartbike")) {
+                return "SmartBike UTN es una iniciativa de movilidad sostenible. Te registras, usas tu bicicleta para venir al campus, anotas tus viajes y nosotros medimos tu impacto positivo en el planeta.";
+            }
+            else {
+                return "¡Hola! Soy SmartBot 🤖, el asistente virtual de SmartBike. Aún estoy aprendiendo a responder preguntas complejas. Si tu duda es muy específica, un administrador del sistema se comunicará contigo pronto a tu correo institucional.";
+            }
+        }
+
+        function procesarPregunta(texto) {
+            // 1. Mostrar pregunta del usuario
+            agregarMensaje(texto, true);
+            
+            // 2. Simular un indicador de "escribiendo..." o retardo natural del bot
+            setTimeout(() => {
+                const respuesta = obtenerRespuestaBot(texto);
+                agregarMensaje(respuesta, false);
+            }, 650); // 650ms de retardo para que se sienta más humano
+        }
+
         function enviarPreguntaSugerida(btn) {
-            agregarMensaje(btn.textContent, true);
-            setTimeout(() => agregarMensaje('Gracias por tu pregunta. Un miembro de SmartBot te responderá en breve.', false), 500);
+            procesarPregunta(btn.textContent);
         }
 
         document.getElementById('sbChatForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const input = document.getElementById('sbChatInput');
-            if (!input.value.trim()) return;
-            agregarMensaje(input.value, true);
-            input.value = '';
-            setTimeout(() => agregarMensaje('Gracias por tu pregunta. Un miembro de SmartBot te responderá en breve.', false), 500);
+            const texto = input.value;
+            
+            if (!texto.trim()) return;
+            
+            procesarPregunta(texto);
+            input.value = ''; // Limpiar el input
         });
     </script>
 }

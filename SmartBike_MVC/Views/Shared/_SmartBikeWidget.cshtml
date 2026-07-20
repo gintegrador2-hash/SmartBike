@@ -1,34 +1,141 @@
-﻿<div class="sb-widget-btn" id="sbWidgetBtn" onclick="toggleSbWidget()">
+﻿<div class="sb-widget-btn" onclick="toggleSmartWidget()">
     <i class="fa-solid fa-bicycle"></i>
 </div>
 
-<div class="sb-widget-panel" id="sbWidgetPanel">
+<div class="sb-widget-panel" id="sbPublicWidgetPanel">
     <div class="sb-widget-header">
         <div class="d-flex align-items-center">
             <div class="sb-widget-icon"><i class="fa-solid fa-bicycle"></i></div>
             <div class="ms-2">
                 <div class="sb-widget-title">SmartBike UTN</div>
-                <div class="sb-widget-subtitle">Movilidad Sostenible</div>
+                <div class="sb-widget-subtitle">Tu portal de movilidad</div>
             </div>
         </div>
-        <span onclick="toggleSbWidget()" class="sb-widget-close"><i class="fa-solid fa-xmark"></i></span>
+        <div class="sb-widget-close" onclick="toggleSmartWidget()"><i class="fa-solid fa-xmark"></i></div>
     </div>
+    
+    <div class="sb-widget-body" style="padding: 20px;">
+        
+        <div id="sbWidgetMenu">
+            <p class="text-center text-muted mb-4" style="font-size: 0.95rem;">¿Qué deseas hacer hoy?</p>
 
-    <div class="sb-widget-body">
-        <h5>¡Bienvenido a SmartBike!</h5>
-        <p>Descubre una nueva forma de movilizarte dentro del campus mientras ayudas al medio ambiente.</p>
+            <div class="d-grid gap-3">
+                <a asp-controller="Account" asp-action="Login" class="btn sb-btn-solid text-start px-3 py-2 shadow-sm">
+                    <i class="fa-solid fa-user me-2"></i> Iniciar Sesión
+                </a>
+                <a asp-controller="Account" asp-action="Register" class="btn sb-btn-outline text-start px-3 py-2 shadow-sm">
+                    <i class="fa-solid fa-user-plus me-2"></i> Registrarse
+                </a>
+                <a asp-controller="Home" asp-action="Conocenos" class="btn sb-btn-outline text-start px-3 py-2 shadow-sm">
+                    <i class="fa-solid fa-circle-info me-2"></i> Conócenos
+                </a>
+                <button type="button" onclick="showWidgetChat()" class="btn sb-btn-light text-start px-3 py-2 shadow-sm border">
+                    <i class="fa-solid fa-robot me-2 text-primary"></i> Hablar con SmartBot
+                </button>
+            </div>
+        </div>
 
-        <a class="btn sb-btn-solid w-100 mb-2" asp-controller="Account" asp-action="Login">
-            <i class="fa-solid fa-right-to-bracket"></i> Iniciar sesión
-        </a>
-        <a class="btn sb-btn-outline w-100 mb-2" asp-controller="Account" asp-action="Register">
-            <i class="fa-solid fa-user-plus"></i> Registrarse
-        </a>
-        <a class="btn sb-btn-light w-100 mb-2" asp-controller="Account" asp-action="Login" asp-route-returnUrl="/Dashboard/Preguntas">
-            <i class="fa-solid fa-robot"></i> Hablar con SmartBot
-        </a>
-        <a class="btn sb-btn-light w-100" asp-controller="Home" asp-action="Index" asp-fragment="conocenos">
-            <i class="fa-solid fa-circle-info"></i> Conócenos
-        </a>
+        <div id="sbWidgetChat" style="display: none;">
+            
+            <button class="btn btn-sm btn-link text-decoration-none text-muted p-0 mb-2" onclick="showWidgetMenu()">
+                <i class="fa-solid fa-arrow-left me-1"></i> Volver al menú
+            </button>
+
+            <div class="sb-chat-box" id="sbPublicChatBox" style="min-height: 250px; max-height: 280px; padding: 10px; margin-bottom: 10px; background-color: #f9f9f9;">
+                <div class="sb-chat-msg sb-chat-bot">
+                    <div class="sb-widget-icon sb-chat-avatar"><i class="fa-solid fa-robot"></i></div>
+                    <div class="sb-chat-bubble">¡Hola! Soy SmartBot 👋. Estoy aquí para explicarte cómo funciona SmartBike. ¿Qué te gustaría saber?</div>
+                </div>
+            </div>
+            
+            <div class="sb-chip-row mt-2 mb-2" style="gap: 5px;">
+                <button type="button" class="sb-chip" style="font-size: 0.7rem; padding: 4px 8px;" onclick="enviarPreguntaPublica('¿Qué es SmartBike?')">¿Qué es?</button>
+                <button type="button" class="sb-chip" style="font-size: 0.7rem; padding: 4px 8px;" onclick="enviarPreguntaPublica('¿Cómo me registro?')">Registro</button>
+                <button type="button" class="sb-chip" style="font-size: 0.7rem; padding: 4px 8px;" onclick="enviarPreguntaPublica('¿Es gratis?')">¿Es gratis?</button>
+            </div>
+
+            <form class="sb-chat-input-row" id="sbPublicChatForm" style="margin-top:0;">
+                <input type="text" id="sbPublicChatInput" class="form-control form-control-sm" placeholder="Escribe tu duda..." autocomplete="off" />
+                <button type="submit" class="btn sb-btn-solid sb-chat-send btn-sm" style="width: 40px;"><i class="fa-solid fa-paper-plane"></i></button>
+            </form>
+        </div>
+
     </div>
 </div>
+
+<script>
+    // 1. Abrir/Cerrar el Widget entero
+    function toggleSmartWidget() {
+        document.getElementById('sbPublicWidgetPanel').classList.toggle('show');
+    }
+
+    // 2. Navegación INTERNA del widget
+    function showWidgetMenu() {
+        document.getElementById('sbWidgetMenu').style.display = 'block';
+        document.getElementById('sbWidgetChat').style.display = 'none';
+    }
+
+    function showWidgetChat() {
+        document.getElementById('sbWidgetMenu').style.display = 'none';
+        document.getElementById('sbWidgetChat').style.display = 'block';
+    }
+
+    // 3. Lógica para agregar mensajes al chat
+    function agregarMensajePublico(texto, esUsuario) {
+        const box = document.getElementById('sbPublicChatBox');
+        const div = document.createElement('div');
+        div.className = 'sb-chat-msg ' + (esUsuario ? 'sb-chat-user' : 'sb-chat-bot');
+        
+        div.innerHTML = (esUsuario ? '' : '<div class="sb-widget-icon sb-chat-avatar"><i class="fa-solid fa-robot"></i></div>')
+            + '<div class="sb-chat-bubble">' + texto + '</div>';
+            
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    // 4. Cerebro del bot
+    function obtenerRespuestaPublica(pregunta) {
+        const texto = pregunta.toLowerCase().trim();
+
+        if (texto.includes("qué es") || texto.includes("que es") || texto.includes("de que trata")) {
+            return "SmartBike es el nuevo sistema de movilidad sostenible de la Universidad Técnica del Norte. Fomentamos el uso de la bicicleta para reducir la huella de carbono en nuestro campus.";
+        }
+        else if (texto.includes("registro") || texto.includes("registrarme") || texto.includes("crear cuenta")) {
+            return "¡Es muy sencillo! Regresa al menú anterior, selecciona 'Registrarse' e ingresa usando tu correo institucional de la UTN (@@utn.edu.ec) y tu número de cédula.";
+        }
+        else if (texto.includes("gratis") || texto.includes("costo") || texto.includes("pagar")) {
+            return "¡Totalmente gratis! Es un proyecto impulsado por y para la comunidad universitaria de la UTN para promover la salud y la sostenibilidad.";
+        }
+        else if (texto.includes("beneficios") || texto.includes("gano") || texto.includes("por qué")) {
+            return "Al unirte, podrás llevar un registro de tus kilómetros recorridos, las calorías que quemas, el dinero que ahorras y el CO₂ que evitas que llegue a la atmósfera. ¡Todo desde tu perfil!";
+        }
+        else {
+            return "Aún estoy aprendiendo, pero te invito a hacer clic en '¿Qué es SmartBike?' en el menú anterior para leer toda la información del proyecto.";
+        }
+    }
+
+    // 5. Procesador de interacción
+    function procesarPreguntaPublica(texto) {
+        agregarMensajePublico(texto, true);
+        
+        setTimeout(() => {
+            const respuesta = obtenerRespuestaPublica(texto);
+            agregarMensajePublico(respuesta, false);
+        }, 700);
+    }
+
+    function enviarPreguntaPublica(texto) {
+        procesarPreguntaPublica(texto);
+    }
+
+    document.getElementById('sbPublicChatForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const input = document.getElementById('sbPublicChatInput');
+        const texto = input.value;
+        
+        if (!texto.trim()) return;
+        
+        procesarPreguntaPublica(texto);
+        input.value = '';
+    });
+</script>
