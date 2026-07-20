@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Consumer; // <- Importante: Agregar el namespace de tu ApiService
+using Consumer;
 
 namespace SmartBike_MVC
 {
@@ -18,21 +18,22 @@ namespace SmartBike_MVC
                     options.ExpireTimeSpan = TimeSpan.FromHours(8);
                 });
 
-            // INICIO DE LA CONEXIÓN MVC -> API
+            // --- CONEXIÓN MVC -> API ---
+            // 1. Buscamos la variable API_URL en Render.
+            // 2. Si no la encuentra (porque estás en tu compu), usa localhost.
+            string urlApi = Environment.GetEnvironmentVariable("API_URL") ?? "https://localhost:7119/api/";
+
             builder.Services.AddHttpClient<ApiService>(client =>
             {
-                // Apuntando al puerto 7119 donde se ejecuta tu API
-                string urlFija = "https://localhost:7119/api/";
-
-                Console.WriteLine($"🚀 CONECTANDO SMARTBIKE MVC A API: {urlFija}");
-                client.BaseAddress = new Uri(urlFija);
+                Console.WriteLine($"🚀 CONECTANDO SMARTBIKE MVC A API EN: {urlApi}");
+                client.BaseAddress = new Uri(urlApi);
             })
             .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
             {
-                // Permite ignorar errores de certificado SSL en desarrollo local
+                // Esto es solo para que no explote si el certificado no es perfecto en desarrollo
                 ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
             });
-            // FIN DE LA CONEXIÓN
+            // ---------------------------
 
             var app = builder.Build();
 
@@ -44,9 +45,7 @@ namespace SmartBike_MVC
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
 
