@@ -20,3 +20,8 @@ html {
 body {
   margin-bottom: 60px;
 }
+.sb-chip:hover {
+    border-color: var(--sb-green);
+    color: var(--sb-green-dark);
+    background: #F2F8F4;
+}

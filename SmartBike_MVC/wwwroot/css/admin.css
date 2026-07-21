@@ -93,3 +93,8 @@
         border-color: #B02A26;
         color: #8F1F1C;
     }
+.sb-chip:hover {
+    border-color: var(--sb-green);
+    color: var(--sb-green-dark);
+    background: #F2F8F4;
+}

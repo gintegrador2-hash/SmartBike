@@ -145,12 +145,12 @@ namespace SmartBike_MVC.Controllers
         public IActionResult Beneficios()
         {
             var model = new List<BeneficioViewModel>
-            {
-                new() { Icono = "fa-heart", IconoBg = "sb-icon-red", Titulo = "Salud Cardiovascular", Descripcion = "Pedalear 30 minutos diarios reduce el riesgo de enfermedades cardíacas..." },
-                new() { Icono = "fa-leaf", IconoBg = "sb-icon-green", Titulo = "Reducción de CO₂", Descripcion = "Cada kilómetro en bicicleta evita aproximadamente 150 g de CO₂..." },
-                new() { Icono = "fa-bolt", IconoBg = "sb-icon-yellow", Titulo = "Movilidad Sostenible", Descripcion = "La bicicleta es el medio de transporte más eficiente del campus..." },
-                new() { Icono = "fa-dollar-sign", IconoBg = "sb-icon-blue", Titulo = "Ahorro Económico", Descripcion = "Usar la bicicleta puede suponer un ahorro de hasta $50 mensuales..." },
-            };
+    {
+        new() { Icono = "fa-heart", IconoBg = "sb-circle-green", Titulo = "Salud Cardiovascular", Descripcion = "Pedalear 30 minutos diarios reduce el riesgo de enfermedades cardíacas..." },
+        new() { Icono = "fa-leaf", IconoBg = "sb-circle-green", Titulo = "Reducción de CO₂", Descripcion = "Cada kilómetro en bicicleta evita aproximadamente 150 g de CO₂..." },
+        new() { Icono = "fa-bolt", IconoBg = "sb-circle-green", Titulo = "Movilidad Sostenible", Descripcion = "La bicicleta es el medio de transporte más eficiente del campus..." },
+        new() { Icono = "fa-dollar-sign", IconoBg = "sb-circle-green", Titulo = "Ahorro Económico", Descripcion = "Usar la bicicleta puede suponer un ahorro de hasta $50 mensuales..." },
+    };
             return View(model);
         }
 

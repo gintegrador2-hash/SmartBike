@@ -733,3 +733,50 @@
     padding: 1.3rem 1.5rem;
     height: 100%;
 }
+    /* ============================================================
+   SISTEMA DE ESPACIADO (escala de 8px) Y PROXIMIDAD
+   Ley de Gestalt: elementos relacionados, juntos;
+   grupos distintos, separados.
+   ============================================================ */
+
+    /* Molécula tarjeta: ritmo interno círculo -> título -> texto */
+    .sb-dato-card .sb-icon-circle {
+        margin-bottom: 16px; /* separa el ícono del bloque de texto */
+    }
+
+    .sb-dato-card h2 {
+        margin-bottom: 4px; /* título pegado a SU descripción */
+    }
+
+    .sb-dato-card p {
+        line-height: 1.5;
+    }
+
+/* Página: título -> subtítulo -> contenido */
+.sb-dash-title {
+    margin-bottom: 4px; /* título pegado a su subtítulo */
+}
+
+.sb-dash-subtitle {
+    margin-bottom: 24px; /* el par título+subtítulo separado del contenido */
+}
+
+/* Chat: límite de altura con scroll interno (ley de región común) */
+.sb-chat-box {
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+/* Sidebar: bloque inferior con respiro uniforme */
+.sb-sidebar-logout {
+    padding-top: 16px;
+}
+
+    .sb-sidebar-logout .sb-nav-item {
+        margin-bottom: 8px;
+    }
+.sb-chip:hover {
+    border-color: var(--sb-green);
+    color: var(--sb-green-dark);
+    background: #F2F8F4;
+}
