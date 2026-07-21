@@ -136,5 +136,27 @@ namespace Consumer
                 return new ApiResult<TResponse> { Success = false, Message = ex.Message };
             }
         }
+        // MÉTODO PARA ACTUALIZAR (PUT)
+        public async Task<ApiResult<string>> PutAsync<T>(string endpoint, T data)
+        {
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync(endpoint, data);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return new ApiResult<string> { Success = true, Message = "Actualizado correctamente" };
+                }
+                else
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    return new ApiResult<string> { Success = false, Message = error };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ApiResult<string> { Success = false, Message = ex.Message };
+            }
+        }
     }
 }

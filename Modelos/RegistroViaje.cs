@@ -54,11 +54,11 @@ namespace Modelos
 
         [ForeignKey(nameof(UsuarioCedula))]
         [NotMapped]
-        public virtual Usuario Usuario { get; set; } = null!;
+        public virtual Usuario? Usuario { get; set; }
 
         [ForeignKey(nameof(TipoTransporteId))]
         [NotMapped]
-        public virtual TipoTransporte TipoTransporte { get; set; } = null!;
+        public virtual TipoTransporte? TipoTransporte { get; set; }
 
         [ForeignKey(nameof(EstacionamientoId))]
         [NotMapped]

@@ -13,11 +13,16 @@ namespace SmartBike_MVC
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
+
                     options.LoginPath = "/Account/Login";
                     options.AccessDeniedPath = "/Account/Login";
                     options.ExpireTimeSpan = TimeSpan.FromHours(8);
                 });
-
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("SoloAdmin", policy =>
+                    policy.RequireClaim("RolId", "2"));
+            });
             // --- CONEXIÓN MVC -> API ---
             // 1. Buscamos la variable API_URL en Render.
             // 2. Si no la encuentra (porque estás en tu compu), usa localhost.

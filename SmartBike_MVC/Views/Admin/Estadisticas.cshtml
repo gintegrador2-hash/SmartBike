@@ -1,0 +1,114 @@
+﻿@model SmartBike_MVC.Models.EstadisticasAdminViewModel
+@{
+    Layout = "_AdminLayout";
+}
+
+<div id="zona-imprimible">
+    <h1 class="sb-admin-page-title">Estadísticas de CO2 del campus</h1>
+
+    @if (Model.ErrorApi != null)
+    {
+        <div class="alert alert-warning">@Model.ErrorApi</div>
+    }
+
+    <!-- ==================== TARJETAS DE RESUMEN ==================== -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-sm-6">
+            <div class="sb-admin-card text-center">
+                <div class="sb-admin-icon-circle sb-admin-circle-green mx-auto">
+                    <i class="fa-solid fa-leaf" aria-hidden="true"></i>
+                </div>
+                <div class="sb-admin-card-label">CO2 evitado</div>
+                <div class="sb-admin-card-value">@Model.Estadisticas.Co2EvitadoKg.ToString("N0") kg</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="sb-admin-card text-center">
+                <div class="sb-admin-icon-circle sb-admin-circle-gray mx-auto">
+                    <i class="fa-solid fa-smog" aria-hidden="true"></i>
+                </div>
+                <div class="sb-admin-card-label">CO2 generado</div>
+                <div class="sb-admin-card-value">@Model.Estadisticas.Co2GeneradoKg.ToString("N0") kg</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="sb-admin-card text-center">
+                <div class="sb-admin-icon-circle sb-admin-circle-blue mx-auto">
+                    <i class="fa-solid fa-route" aria-hidden="true"></i>
+                </div>
+                <div class="sb-admin-card-label">Viajes registrados</div>
+                <div class="sb-admin-card-value">@Model.Estadisticas.TotalViajes.ToString("N0")</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="sb-admin-card text-center">
+                <div class="sb-admin-icon-circle sb-admin-circle-yellow mx-auto">
+                    <i class="fa-solid fa-users" aria-hidden="true"></i>
+                </div>
+                <div class="sb-admin-card-label">Usuarios activos</div>
+                <div class="sb-admin-card-value">@Model.Estadisticas.UsuariosActivos.ToString("N0")</div>
+            </div>
+        </div>
+    </div>
+    <!-- ==================== GRÁFICO DE TENDENCIA ==================== -->
+    <div class="sb-admin-panel mb-4">
+        <h5 class="fw-bold mb-1">Tendencia de CO2 evitado</h5>
+        <p class="text-muted small mb-3">
+            Kilogramos de CO2 evitados por movilidad sostenible — últimos @Model.Dias días
+        </p>
+        <canvas id="graficoTendencia" height="90"></canvas>
+    </div>
+</div>
+
+<!-- ==================== FILTROS + EXPORTAR ==================== -->
+<div class="d-flex flex-wrap align-items-center gap-2">
+    <form method="get" asp-controller="Admin" asp-action="Estadisticas"
+          class="d-flex flex-wrap gap-2" id="formFiltros">
+        <select name="dias" class="form-select sb-admin-select" id="filtro-dias"
+                aria-label="Filtrar por rango de días" onchange="this.form.submit()">
+        </select>
+
+        <select name="dias" class="form-select sb-admin-select" id="filtro-dias"
+                aria-label="Filtrar por rango de días" onchange="this.form.submit()">
+        </select>
+    </form>
+
+    <button type="button" class="btn sb-admin-btn-outline ms-auto" onclick="window.print()">
+        <i class="fa-solid fa-download me-1"></i> Exportar PDF
+    </button>
+</div>
+
+@section Scripts {
+    <script src="~/lib/chartjs/chart.umd.min.js"></script>
+    <script>
+        const etiquetas = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+        Model.Estadisticas.Tendencia.Select(t => t.Etiqueta)));
+        const valores = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+        Model.Estadisticas.Tendencia.Select(t => t.Co2EvitadoKg)));
+
+        // Barras con dos tonos de verde alternados, como en el diseño
+        const colores = valores.map((v, i) => i % 2 === 0 ? '#6FBF8E' : '#157347');
+
+        new Chart(document.getElementById('graficoTendencia'), {
+            type: 'bar',
+            data: {
+                labels: etiquetas,
+                datasets: [{
+                    label: 'CO2 evitado (kg)',
+                    data: valores,
+                    backgroundColor: colores,
+                    borderRadius: 6,
+                    maxBarThickness: 46
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#EEF2EE' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+}

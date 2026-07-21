@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Panel de administración de SmartBike UTN: estadísticas de CO2 evitado en el campus y gestión del chatbot SmartBot." />
+    <title>@ViewData["Title"] - SmartBike Admin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/smartbike.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/fontawesome/css/all.min.css" />
+</head>
+<body class="sb-dash-body">
+    <div class="sb-dash-wrapper">
+        <aside class="sb-sidebar sb-admin-sidebar">
+            <div class="sb-sidebar-brand">
+                <div class="sb-widget-icon sb-admin-brand-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></div>
+                <div class="ms-2">
+                    <div class="sb-sidebar-title sb-admin-title">SmartBike</div>
+                    <div class="sb-admin-subtitle">Panel admin</div>
+                </div>
+            </div>
+
+            @{
+                var activoAdmin = ViewData["ActiveAdmin"] as string;
+            }
+            <nav class="sb-sidebar-nav" aria-label="Menú de administración">
+                <a class="sb-nav-item sb-admin-nav-item @(activoAdmin == "Estadisticas" ? "active" : "")"
+                   asp-controller="Admin" asp-action="Estadisticas">
+                    <i class="fa-solid fa-chart-column" aria-hidden="true"></i> Estadísticas CO2
+                </a>
+                <a class="sb-nav-item sb-admin-nav-item @(activoAdmin == "Chatbot" ? "active" : "")"
+                   asp-controller="Admin" asp-action="Chatbot">
+                    <i class="fa-regular fa-comment-dots" aria-hidden="true"></i> Chatbot
+                </a>
+            </nav>
+
+            <div class="sb-sidebar-logout sb-admin-bottom">
+                <a class="sb-nav-item sb-admin-nav-item" asp-controller="Dashboard" asp-action="Index">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Volver a la app
+                </a>
+                <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                    <button type="submit" class="sb-nav-item sb-nav-logout w-100 text-start">
+                        <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Cerrar sesión
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        <main class="sb-dash-content">
+            @if (TempData["AdminOk"] != null)
+            {
+                <div class="alert alert-success sb-admin-alert" role="status">@TempData["AdminOk"]</div>
+            }
+            @if (TempData["AdminError"] != null)
+            {
+                <div class="alert alert-danger sb-admin-alert" role="alert">@TempData["AdminError"]</div>
+            }
+            @RenderBody()
+        </main>
+    </div>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

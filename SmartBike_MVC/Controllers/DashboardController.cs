@@ -48,6 +48,7 @@ namespace SmartBike_MVC.Controllers
         }
 
         [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> RegistrarViaje(string transporte, string distancia)
         {
             var correoOIdentificador = User.Identity?.Name ?? "desconocido";
@@ -74,10 +75,62 @@ namespace SmartBike_MVC.Controllers
                 co2Evitado = (int)(km * 150);
             }
 
+            // ============================================================
+            // NUEVO: guardar el viaje en la BD a través de la API
+            // (antes solo se guardaba en TempData y el panel admin no veía nada)
+            // ============================================================
+            var cedula = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (!string.IsNullOrEmpty(cedula) && km > 0)
+            {
+                int? tipoId = await ObtenerTipoTransporteIdAsync(transporte);
+
+                if (tipoId.HasValue)
+                {
+                    var viaje = new
+                    {
+                        UsuarioCedula = cedula,
+                        TipoTransporteId = tipoId.Value,
+                        DistanciaKm = (decimal)km,
+                        Validado = false,
+                        Fecha = System.DateTime.Today,
+                        FechaRegistro = System.DateTime.Now
+                    };
+
+                    await _apiService.PostAsync("RegistrosViajes", viaje);
+                }
+            }
+            // ============================================================
+
             TempData[llaveCo2] = co2Evitado;
             TempData[llaveRegistro] = true;
 
             return RedirectToAction("Index");
+        }
+
+        // Busca el ID del tipo de transporte en la BD según lo elegido en la vista
+        private async Task<int?> ObtenerTipoTransporteIdAsync(string transporte)
+        {
+            var tipos = await _apiService.GetListAsync<Modelos.TipoTransporte>("TiposTransporte");
+            if (!tipos.Success || tipos.Data == null || !tipos.Data.Any()) return null;
+
+            var candidatos = transporte switch
+            {
+                "bike" => new[] { "bici" },
+                "walk" => new[] { "camin", "pie" },
+                "car" => new[] { "carro", "auto", "vehic" },
+                _ => new[] { transporte ?? "" }
+            };
+
+            var tipo = tipos.Data.FirstOrDefault(t =>
+                candidatos.Any(c => t.Nombre.ToLower().Contains(c)));
+
+            // Respaldo: si no coincide el nombre, usa el factor de emisión
+            tipo ??= (transporte == "bike" || transporte == "walk")
+                ? tipos.Data.FirstOrDefault(t => t.FactorCo2GKm == 0)
+                : tipos.Data.FirstOrDefault(t => t.FactorCo2GKm > 0);
+
+            return tipo?.TipoTransporteId;
         }
 
         public IActionResult Estacionamientos()

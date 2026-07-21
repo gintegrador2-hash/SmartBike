@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="SmartBike UTN: registra tu movilidad sostenible en el campus y descubre cuánto CO2 evitas cada día." />
     <title>@ViewData["Title"] - SmartBike UTN</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/smartbike.css" asp-append-version="true" />
@@ -38,16 +39,20 @@
                 <a class="sb-nav-item @(activo == "Perfil" ? "active" : "")" asp-controller="Dashboard" asp-action="Perfil">
                     <i class="fa-regular fa-user"></i> Perfil
                 </a>
-                <a class="sb-nav-item @(activo == "Configuracion" ? "active" : "")" asp-controller="Dashboard" asp-action="Configuracion">
-                    <i class="fa-solid fa-gear"></i> Configuración
-                </a>
+          
             </nav>
-
-            <form asp-controller="Account" asp-action="Logout" method="post" class="sb-sidebar-logout">
-                <button type="submit" class="sb-nav-item sb-nav-logout">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
-                </button>
-            </form>
+            <div class="sb-sidebar-logout" style="border-top: 1px solid #E7ECE8; padding-top: 0.75rem;">
+              
+                    <a class="sb-nav-item" asp-controller="Admin" asp-action="Estadisticas">
+                        <i class="fa-regular fa-shield"></i> Modo administrador
+                    </a>
+               
+                <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                    <button type="submit" class="sb-nav-item sb-nav-logout">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
+                    </button>
+                </form>
+            </div>
         </aside>
 
         <main class="sb-dash-content">

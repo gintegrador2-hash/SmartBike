@@ -1,0 +1,39 @@
+﻿/* ============================================================
+   ÁTOMO: círculo de ícono — mismo patrón visual que las
+   tarjetas de transporte de la app (Bicicleta/Caminando/Carro):
+   círculo con fondo de color suave e ícono del color fuerte.
+   Se reutiliza el mismo átomo en las 4 métricas del admin.
+   ============================================================ */
+
+.sb-admin-icon-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 0.6rem;
+}
+
+/* Variantes de color del átomo círculo */
+/* Variantes de color del átomo círculo (contraste reforzado) */
+.sb-admin-circle-green {
+    background: #DCEAE1;
+    color: #0C5633;
+}
+
+.sb-admin-circle-gray {
+    background: #E6E9E7;
+    color: #333A36;
+}
+
+.sb-admin-circle-blue {
+    background: #DDE8F4;
+    color: #163A5C;
+}
+
+.sb-admin-circle-yellow {
+    background: #F3E8CE;
+    color: #6B4A0A;
+}
