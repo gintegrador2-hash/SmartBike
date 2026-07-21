@@ -5,23 +5,118 @@
     Layout = "_DashboardLayout";
 }
 
-<h2 class="sb-dash-title">Mi Perfil</h2>
+<h1 class="sb-dash-title h2">Mi Perfil</h1>
 
-<div class="sb-profile-card mt-3">
-    <div class="d-flex align-items-center">
-        <div class="sb-profile-avatar">@Model.Iniciales</div>
-        <div class="ms-3">
-            <div class="sb-profile-name">@Model.Nombres @Model.Apellidos</div>
-            <div class="sb-profile-meta">@Model.Carrera</div>
-            <div class="sb-profile-meta">@Model.CorreoInstitucional</div>
+@if (TempData["PerfilOk"] != null)
+{
+    <div class="alert alert-success" role="status">@TempData["PerfilOk"]</div>
+}
+@if (TempData["PerfilError"] != null)
+{
+    <div class="alert alert-danger" role="alert">@TempData["PerfilError"]</div>
+}
+
+<div class="sb-dato-card mt-3" style="max-width: 780px;">
+    <div class="d-flex align-items-center gap-3">
+        <div class="sb-icon-circle" style="width:64px;height:64px;font-size:1.4rem;background:var(--sb-green);color:#fff;">
+            <strong>@Model.Iniciales</strong>
+        </div>
+        <div>
+            <div class="fw-bold fs-5">@Model.Nombres @Model.Apellidos</div>
+            <div class="sb-admin-texto-suave">@Model.Carrera</div>
+            <div class="sb-admin-texto-suave">@Model.CorreoInstitucional</div>
         </div>
     </div>
+
     <hr />
-    <a href="#" class="sb-profile-option"><i class="fa-regular fa-pen-to-square"></i> Editar perfil</a>
-    <a href="#" class="sb-profile-option"><i class="fa-solid fa-lock"></i> Cambiar contraseña</a>
-    <form asp-controller="Account" asp-action="Logout" method="post">
-        <button type="submit" class="sb-profile-option sb-profile-danger">
-            <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
+
+    <button type="button" class="btn btn-link text-decoration-none text-dark p-0 d-block mb-3"
+            data-bs-toggle="modal" data-bs-target="#modalEditarPerfil">
+        <i class="fa-solid fa-pen-to-square me-2" aria-hidden="true"></i> Editar perfil
+    </button>
+
+    <button type="button" class="btn btn-link text-decoration-none text-dark p-0 d-block mb-3"
+            data-bs-toggle="modal" data-bs-target="#modalContrasena">
+        <i class="fa-solid fa-lock me-2" aria-hidden="true"></i> Cambiar contraseña
+    </button>
+
+    <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-link text-decoration-none text-danger p-0">
+            <i class="fa-solid fa-arrow-right-from-bracket me-2" aria-hidden="true"></i> Cerrar sesión
         </button>
     </form>
+</div>
+
+<!-- ==================== MODAL: EDITAR PERFIL ==================== -->
+<div class="modal fade" id="modalEditarPerfil" tabindex="-1" aria-labelledby="tituloEditarPerfil" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="EditarPerfil" method="post" class="modal-content">
+            @Html.AntiForgeryToken()
+            <div class="modal-header">
+                <h2 class="h5 modal-title" id="tituloEditarPerfil">Editar perfil</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label" for="perfil-cedula">Cédula</label>
+                    <input name="Cedula" id="perfil-cedula" class="form-control" maxlength="10"
+                           value="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="perfil-nombres">Nombres</label>
+                    <input name="Nombres" id="perfil-nombres" class="form-control" maxlength="80"
+                           value="@Model.Nombres" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="perfil-apellidos">Apellidos</label>
+                    <input name="Apellidos" id="perfil-apellidos" class="form-control" maxlength="80"
+                           value="@Model.Apellidos" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="perfil-correo">Correo institucional</label>
+                    <input name="CorreoInstitucional" id="perfil-correo" type="email" class="form-control" maxlength="120"
+                           value="@Model.CorreoInstitucional" required />
+                    <div class="form-text">Este correo es el que usas para iniciar sesión.</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn sb-admin-btn-green">Guardar cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ==================== MODAL: CAMBIAR CONTRASEÑA ==================== -->
+<div class="modal fade" id="modalContrasena" tabindex="-1" aria-labelledby="tituloContrasena" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="CambiarContrasena" method="post" class="modal-content">
+            @Html.AntiForgeryToken()
+            <div class="modal-header">
+                <h2 class="h5 modal-title" id="tituloContrasena">Cambiar contraseña</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label" for="pass-actual">Contraseña actual</label>
+                    <input name="ContrasenaActual" id="pass-actual" type="password" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="pass-nueva">Nueva contraseña</label>
+                    <input name="ContrasenaNueva" id="pass-nueva" type="password" class="form-control"
+                           minlength="6" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="pass-confirmar">Confirmar nueva contraseña</label>
+                    <input name="ContrasenaConfirmar" id="pass-confirmar" type="password" class="form-control"
+                           minlength="6" required />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn sb-admin-btn-green">Cambiar contraseña</button>
+            </div>
+        </form>
+    </div>
 </div>

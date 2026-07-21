@@ -706,3 +706,30 @@
 .sb-profile-danger {
     color: #d9534f;
 }
+.sb-dash-content .text-muted {
+    color: #55605A !important;
+}
+.sb-icon-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+}
+
+/* Variante principal del átomo (verde institucional, contraste AA) */
+.sb-circle-green {
+    background: #E4F0E8;
+    color: #0C5633;
+}
+
+/* Molécula: tarjeta de dato curioso (círculo + título + descripción) */
+.sb-dato-card {
+    background: #ffffff;
+    border: 1px solid #E7ECE8;
+    border-radius: 14px;
+    padding: 1.3rem 1.5rem;
+    height: 100%;
+}

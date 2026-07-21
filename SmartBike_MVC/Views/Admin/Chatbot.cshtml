@@ -4,49 +4,20 @@
 }
 
 <h1 class="sb-admin-page-title mb-1">Gestión del chatbot</h1>
-<p class="sb-admin-texto-suave mb-4">Revisa preguntas no respondidas y administra la base de conocimiento de SmartBot.</p>
+<p class="sb-admin-texto-suave mb-4">Administra las preguntas sugeridas de SmartBot.</p>
 
 @if (Model.ErrorApi != null)
 {
     <div class="alert alert-warning">@Model.ErrorApi</div>
 }
 
-<!-- ==================== PREGUNTAS SIN RESPONDER ==================== -->
-<div class="sb-admin-panel mb-4">
-    <h2 class="h5 fw-bold mb-3">Preguntas sin responder</h2>
 
-    @if (!Model.SinResponder.Any())
-    {
-        <p class="sb-admin-texto-suave mb-0">No hay preguntas pendientes. ¡SmartBot está al día! 🎉</p>
-    }
-    else
-    {
-        @foreach (var p in Model.SinResponder)
-        {
-            <div class="sb-admin-row">
-                <div>
-                    <div class="sb-admin-row-title">@p.Mensaje</div>
-                    <div class="sb-admin-texto-suave small">Repetida @p.Repeticiones @(p.Repeticiones == 1 ? "vez" : "veces")</div>
-                </div>
-                <form asp-action="ResolverPregunta" method="post" class="m-0">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="mensaje" value="@p.Mensaje" />
-                    <button type="submit" class="sb-admin-icon-btn" title="Marcar como atendida"
-                            aria-label="Marcar pregunta como atendida">
-                        <i class="fa-solid fa-check" aria-hidden="true"></i>
-                    </button>
-                </form>
-            </div>
-        }
-    }
-</div>
-
-<!-- ==================== BASE DE PREGUNTAS FRECUENTES ==================== -->
+<!-- ==================== PREGUNTAS SUGERIDAS ==================== -->
 <div class="sb-admin-panel">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="h5 fw-bold mb-0">Base de preguntas frecuentes</h2>
+        <h2 class="h5 fw-bold mb-0">Preguntas sugeridas del chatbot</h2>
         <button type="button" class="btn sb-admin-btn-green"
-                aria-label="Agregar nueva pregunta frecuente"
+                aria-label="Agregar nueva pregunta sugerida"
                 data-bs-toggle="modal" data-bs-target="#modalNueva">
             <i class="fa-solid fa-plus me-1" aria-hidden="true"></i> Nueva
         </button>
@@ -54,7 +25,7 @@
 
     @if (!Model.PreguntasFrecuentes.Any())
     {
-        <p class="sb-admin-texto-suave mb-0">Aún no hay preguntas en la base de conocimiento.</p>
+        <p class="sb-admin-texto-suave mb-0">Aún no hay preguntas sugeridas registradas.</p>
     }
     else
     {
@@ -69,32 +40,25 @@
                             <span class="badge bg-secondary ms-2">Inactiva</span>
                         }
                     </div>
-                    @if (!string.IsNullOrEmpty(faq.RespuestaDefault))
-                    {
-                        <div class="sb-admin-texto-suave small text-truncate" style="max-width: 600px;">
-                            @faq.RespuestaDefault
-                        </div>
-                    }
                 </div>
                 <div class="d-flex gap-2">
                     <button type="button" class="sb-admin-icon-btn"
                             title="Editar"
-                            aria-label="Editar pregunta frecuente"
+                            aria-label="Editar pregunta sugerida"
                             data-bs-toggle="modal"
                             data-bs-target="#modalEditar"
                             data-id="@faq.PreguntaId"
                             data-texto="@faq.TextoPregunta"
-                            data-respuesta="@faq.RespuestaDefault"
                             data-orden="@faq.Orden"
                             data-activo="@faq.Activo.ToString().ToLower()">
                         <i class="fa-solid fa-pencil" aria-hidden="true"></i>
                     </button>
                     <form asp-action="EliminarPregunta" method="post" class="m-0"
-                          onsubmit="return confirm('¿Eliminar esta pregunta de la base de conocimiento?');">
+                          onsubmit="return confirm('¿Eliminar esta pregunta sugerida?');">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="@faq.PreguntaId" />
                         <button type="submit" class="sb-admin-icon-btn sb-admin-icon-danger" title="Eliminar"
-                                aria-label="Eliminar pregunta frecuente">
+                                aria-label="Eliminar pregunta sugerida">
                             <i class="fa-regular fa-trash-can" aria-hidden="true"></i>
                         </button>
                     </form>
@@ -110,17 +74,13 @@
         <form asp-action="CrearPregunta" method="post" class="modal-content">
             @Html.AntiForgeryToken()
             <div class="modal-header">
-                <h2 class="h5 modal-title" id="tituloModalNueva">Nueva pregunta frecuente</h2>
+                <h2 class="h5 modal-title" id="tituloModalNueva">Nueva pregunta sugerida</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
                     <label class="form-label" for="nueva-texto">Pregunta</label>
                     <input name="TextoPregunta" id="nueva-texto" class="form-control" maxlength="200" required />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label" for="nueva-respuesta">Respuesta del bot</label>
-                    <textarea name="RespuestaDefault" id="nueva-respuesta" class="form-control" rows="3"></textarea>
                 </div>
                 <div class="row">
                     <div class="col-6 mb-3">
@@ -151,17 +111,13 @@
             @Html.AntiForgeryToken()
             <input type="hidden" name="PreguntaId" id="edit-id" />
             <div class="modal-header">
-                <h2 class="h5 modal-title" id="tituloModalEditar">Editar pregunta frecuente</h2>
+                <h2 class="h5 modal-title" id="tituloModalEditar">Editar pregunta sugerida</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
                     <label class="form-label" for="edit-texto">Pregunta</label>
                     <input name="TextoPregunta" id="edit-texto" class="form-control" maxlength="200" required />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label" for="edit-respuesta">Respuesta del bot</label>
-                    <textarea name="RespuestaDefault" id="edit-respuesta" class="form-control" rows="3"></textarea>
                 </div>
                 <div class="row">
                     <div class="col-6 mb-3">
@@ -193,7 +149,6 @@
             const btn = event.relatedTarget;
             document.getElementById('edit-id').value = btn.dataset.id;
             document.getElementById('edit-texto').value = btn.dataset.texto;
-            document.getElementById('edit-respuesta').value = btn.dataset.respuesta || '';
             document.getElementById('edit-orden').value = btn.dataset.orden;
             document.getElementById('edit-activo').checked = (btn.dataset.activo === 'true');
         });

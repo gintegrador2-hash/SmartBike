@@ -1,21 +1,23 @@
 ﻿@model List<SmartBike_MVC.Models.DatoCuriosoViewModel>
 @{
-    ViewData["Title"] = "Datos Curiosos";
+    ViewData["Title"] = "Datos curiosos";
     ViewData["Active"] = "DatosCuriosos";
     Layout = "_DashboardLayout";
 }
 
-<h2 class="sb-dash-title">Datos Curiosos</h2>
-<p class="sb-dash-subtitle">Información interesante sobre movilidad sostenible y tu salud</p>
+<h1 class="sb-dash-title h2">Datos curiosos</h1>
+<p class="sb-dash-subtitle">Hechos sobre movilidad sostenible que quizás no conocías</p>
 
-<div class="row g-4 mt-1">
+<div class="row g-3 mt-1">
     @foreach (var dato in Model)
     {
-        <div class="col-md-4">
-            <div class="sb-fact-card">
-                <div class="sb-fact-icon">@dato.Icono</div>
-                <h6>@dato.Titulo</h6>
-                <p>@dato.Descripcion</p>
+        <div class="col-lg-4 col-md-6">
+            <div class="sb-dato-card">
+                <div class="sb-icon-circle @dato.IconoBg">
+                    <i class="fa-solid @dato.Icono" aria-hidden="true"></i>
+                </div>
+                <h2 class="h6 fw-bold mt-3 mb-1">@dato.Titulo</h2>
+                <p class="sb-admin-texto-suave mb-0">@dato.Descripcion</p>
             </div>
         </div>
     }

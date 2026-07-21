@@ -18,6 +18,7 @@ namespace SmartBike_MVC.Models
     public class DatoCuriosoViewModel
     {
         public string Icono { get; set; } = null!;
+        public string IconoBg { get; set; } = null!;
         public string Titulo { get; set; } = null!;
         public string Descripcion { get; set; } = null!;
     }
@@ -41,5 +42,18 @@ namespace SmartBike_MVC.Models
         public string Iniciales { get; set; } = null!;
         public string Carrera { get; set; } = null!;
         public string CorreoInstitucional { get; set; } = null!;
+    }
+    public class EditarPerfilViewModel
+    {
+        public string Nombres { get; set; } = null!;
+        public string Apellidos { get; set; } = null!;
+        public string CorreoInstitucional { get; set; } = null!;
+    }
+
+    public class CambiarContrasenaViewModel
+    {
+        public string ContrasenaActual { get; set; } = null!;
+        public string ContrasenaNueva { get; set; } = null!;
+        public string ContrasenaConfirmar { get; set; } = null!;
     }
 }

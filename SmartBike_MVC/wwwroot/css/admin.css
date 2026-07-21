@@ -37,3 +37,59 @@
     background: #F3E8CE;
     color: #6B4A0A;
 }
+.sb-admin-panel {
+    background: #ffffff;
+    border: 1px solid #E7ECE8;
+    border-radius: 14px;
+    padding: 1.4rem 1.6rem;
+}
+/* Molécula: fila de lista (texto + botones de acción) */
+.sb-admin-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid #F0F2F0;
+}
+
+    .sb-admin-row:last-child {
+        border-bottom: none;
+    }
+
+.sb-admin-row-title {
+    font-weight: 600;
+    color: #1c2b22;
+}
+
+/* Átomo: botón circular de icono (check, lápiz, basurero) */
+.sb-admin-icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid #C7CFC9;
+    background: #ffffff;
+    color: #55605A;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+    .sb-admin-icon-btn:hover,
+    .sb-admin-icon-btn:focus {
+        border-color: var(--sb-green);
+        color: var(--sb-green-dark);
+    }
+
+.sb-admin-icon-danger {
+    color: #B02A26;
+    background: #FDF3F3;
+    border-color: #E8B6B4;
+}
+
+    .sb-admin-icon-danger:hover,
+    .sb-admin-icon-danger:focus {
+        border-color: #B02A26;
+        color: #8F1F1C;
+    }

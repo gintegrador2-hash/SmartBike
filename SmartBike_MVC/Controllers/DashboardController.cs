@@ -4,6 +4,10 @@ using SmartBike_MVC.Models;
 using Consumer;
 using System.Threading.Tasks;
 using System.Linq;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Modelos;
+using System.Security.Claims;
 
 namespace SmartBike_MVC.Controllers
 {
@@ -17,7 +21,7 @@ namespace SmartBike_MVC.Controllers
             _apiService = apiService;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var correoOIdentificador = User.Identity?.Name ?? "desconocido";
             var nombre = correoOIdentificador.Split(' ')[0];
@@ -150,53 +154,52 @@ namespace SmartBike_MVC.Controllers
             return View(model);
         }
 
-        public IActionResult Preguntas()
+        public async Task<IActionResult> Preguntas()
         {
+            // Los chips sugeridos vienen de la BD (los administra el admin en su panel)
+            var respuesta = await _apiService.GetListAsync<Modelos.PreguntaFrecuente>("Chatbot/PreguntasFrecuentes");
+
+            List<string> sugeridas;
+
+            if (respuesta.Success && respuesta.Data != null && respuesta.Data.Any())
+            {
+                sugeridas = respuesta.Data.Select(p => p.TextoPregunta).ToList();
+            }
+            else
+            {
+                // Respaldo por si la API no responde o la base está vacía
+                sugeridas = new List<string>
+        {
+            "¿Cómo funciona SmartBike?",
+            "¿Cómo registrar un recorrido?"
+        };
+            }
+
             var model = new PreguntasViewModel
             {
-                PreguntasSugeridas = new List<string>
-                {
-                    "¿Dónde puedo estacionar mi bicicleta?",
-                    "¿Cómo registrar un recorrido?",
-                    "¿Qué beneficios obtengo?",
-                    "¿Cómo funciona SmartBike?"
-                },
+                PreguntasSugeridas = sugeridas,
                 Mensajes = new List<ChatMensajeViewModel>
-                {
-                    new() { EsBot = true, Texto = "¡Hola! Soy SmartBot 🤖, el asistente de SmartBike UTN. ¿En qué puedo ayudarte hoy?" }
-                }
+        {
+            new() { EsBot = true, Texto = "¡Hola! Soy SmartBot 🤖, el asistente de SmartBike UTN. ¿En qué puedo ayudarte hoy?" }
+        }
             };
             return View(model);
         }
-
         public IActionResult DatosCuriosos()
         {
             var model = new List<DatoCuriosoViewModel>
-            {
-                new() { Icono = "🌿", Titulo = "Cero Emisiones", Descripcion = "Una bicicleta genera 0 g de CO₂ durante su uso..." },
-                new() { Icono = "❤️", Titulo = "Corazón más fuerte", Descripcion = "Pedalear activa el 80 % de los músculos del cuerpo..." },
-                new() { Icono = "🏛️", Titulo = "Campus más verde", Descripcion = "Cada recorrido que registras en SmartBike contribuye al índice de sostenibilidad..." },
-                new() { Icono = "⚡", Titulo = "Velocidad ideal", Descripcion = "La velocidad promedio en bicicleta dentro de un campus es de 15 km/h..." },
-                new() { Icono = "💰", Titulo = "Ahorra mientras pedaleas", Descripcion = "Un estudiante puede ahorrar hasta $600 al año usando bicicleta..." },
-                new() { Icono = "🌍", Titulo = "Impacto global", Descripcion = "Si todos los estudiantes de Ecuador pedalearan a la universidad..." },
-            };
+    {
+        new() { Icono = "fa-person-biking", IconoBg = "sb-circle-green", Titulo = "Ciclismo y salud mental", Descripcion = "Pedalear reduce el estrés hasta un 40% en trayectos cortos." },
+        new() { Icono = "fa-wind",          IconoBg = "sb-circle-green", Titulo = "CO₂ por kilómetro",       Descripcion = "Una bici emite 0 g vs 120 g de un auto a gasolina." },
+        new() { Icono = "fa-heart-pulse",   IconoBg = "sb-circle-green", Titulo = "Corazón más fuerte",      Descripcion = "Pedalear activa el 80 % de los músculos del cuerpo." },
+        new() { Icono = "fa-dollar-sign",   IconoBg = "sb-circle-green", Titulo = "Ahorro mensual",          Descripcion = "Pedalear puede ahorrarte $80 al mes frente al transporte privado." },
+        new() { Icono = "fa-droplet",       IconoBg = "sb-circle-green", Titulo = "Hidratación activa",      Descripcion = "Los ciclistas necesitan hasta 1.5 L extra de agua al día." },
+        new() { Icono = "fa-earth-americas",IconoBg = "sb-circle-green", Titulo = "Campus verde",            Descripcion = "La UTN tiene 45 hectáreas disponibles para movilidad sostenible." },
+    };
             return View(model);
         }
 
-        public IActionResult Perfil()
-        {
-            var nombreCompleto = User.Identity?.Name ?? "Juan Pérez";
-            var partes = nombreCompleto.Split(' ');
-            var model = new PerfilViewModel
-            {
-                Nombres = partes.Length > 0 ? partes[0] : nombreCompleto,
-                Apellidos = partes.Length > 1 ? partes[1] : "",
-                Iniciales = string.Concat(partes.Select(p => p[0])).ToUpper(),
-                Carrera = User.FindFirst("Carrera")?.Value ?? "Ingeniería en Sistemas",
-                CorreoInstitucional = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? ""
-            };
-            return View(model);
-        }
+      
 
         public IActionResult Configuracion()
         {
@@ -240,6 +243,144 @@ namespace SmartBike_MVC.Controllers
             {
                 return Json(new { respuesta = "Error de conexión con SmartBot. Revisa que n8n esté activo." });
             }
+        }
+        // GET: /Dashboard/Perfil — ahora carga los datos REALES desde la API
+        public async Task<IActionResult> Perfil()
+        {
+            var cedula = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            Usuario? usuario = null;
+
+            if (!string.IsNullOrEmpty(cedula))
+            {
+                var resp = await _apiService.GetAsync<Usuario>($"Usuarios/{cedula}");
+                if (resp.Success) usuario = resp.Data;
+            }
+
+            var model = new PerfilViewModel
+            {
+                Nombres = usuario?.Nombres ?? "Usuario",
+                Apellidos = usuario?.Apellidos ?? "",
+                Iniciales = string.Concat($"{usuario?.Nombres} {usuario?.Apellidos}"
+                    .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                    .Take(2).Select(p => p[0])).ToUpper(),
+                Carrera = User.FindFirst("Carrera")?.Value ?? "Ingeniería en Sistemas",
+                CorreoInstitucional = usuario?.CorreoInstitucional ?? ""
+            };
+            return View(model);
+        }
+
+        // POST: /Dashboard/EditarPerfil
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditarPerfil(EditarPerfilViewModel model)
+        {
+            var cedula = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(cedula)
+                || string.IsNullOrWhiteSpace(model.Nombres)
+                || string.IsNullOrWhiteSpace(model.Apellidos)
+                || string.IsNullOrWhiteSpace(model.CorreoInstitucional))
+            {
+                TempData["PerfilError"] = "Nombres, apellidos y correo son obligatorios.";
+                return RedirectToAction(nameof(Perfil));
+            }
+
+            if (!model.CorreoInstitucional.Contains('@'))
+            {
+                TempData["PerfilError"] = "El correo institucional no tiene un formato válido.";
+                return RedirectToAction(nameof(Perfil));
+            }
+
+            // 1. Traer el usuario completo desde la API
+            var resp = await _apiService.GetAsync<Usuario>($"Usuarios/{cedula}");
+            if (!resp.Success || resp.Data == null)
+            {
+                TempData["PerfilError"] = "No se pudo cargar tu información. Intenta de nuevo.";
+                return RedirectToAction(nameof(Perfil));
+            }
+
+            // 2. Actualizar los campos editables y guardar vía API (PUT)
+            var usuario = resp.Data;
+            usuario.Nombres = model.Nombres.Trim();
+            usuario.Apellidos = model.Apellidos.Trim();
+            usuario.CorreoInstitucional = model.CorreoInstitucional.Trim();
+
+            var putResp = await _apiService.PutAsync($"Usuarios/{cedula}", usuario);
+            if (!putResp.Success)
+            {
+                TempData["PerfilError"] = "Error al guardar: " + putResp.Message;
+                return RedirectToAction(nameof(Perfil));
+            }
+
+            // 3. Renovar la cookie para que el nombre y correo nuevos se vean de inmediato
+            await RenovarSesionAsync(usuario);
+
+            TempData["PerfilOk"] = "Perfil actualizado correctamente.";
+            return RedirectToAction(nameof(Perfil));
+        }
+
+        // POST: /Dashboard/CambiarContrasena
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CambiarContrasena(CambiarContrasenaViewModel model)
+        {
+            var cedula = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(cedula))
+                return RedirectToAction(nameof(Perfil));
+
+            if (string.IsNullOrWhiteSpace(model.ContrasenaNueva) || model.ContrasenaNueva.Length < 6)
+            {
+                TempData["PerfilError"] = "La nueva contraseña debe tener al menos 6 caracteres.";
+                return RedirectToAction(nameof(Perfil));
+            }
+
+            if (model.ContrasenaNueva != model.ContrasenaConfirmar)
+            {
+                TempData["PerfilError"] = "La nueva contraseña y su confirmación no coinciden.";
+                return RedirectToAction(nameof(Perfil));
+            }
+
+            var resp = await _apiService.GetAsync<Usuario>($"Usuarios/{cedula}");
+            if (!resp.Success || resp.Data == null)
+            {
+                TempData["PerfilError"] = "No se pudo cargar tu información. Intenta de nuevo.";
+                return RedirectToAction(nameof(Perfil));
+            }
+
+            var usuario = resp.Data;
+
+            // Verificar la contraseña actual antes de cambiarla
+            if (usuario.ContrasenaHash != model.ContrasenaActual)
+            {
+                TempData["PerfilError"] = "La contraseña actual es incorrecta.";
+                return RedirectToAction(nameof(Perfil));
+            }
+
+            usuario.ContrasenaHash = model.ContrasenaNueva;
+
+            var putResp = await _apiService.PutAsync($"Usuarios/{cedula}", usuario);
+            TempData[putResp.Success ? "PerfilOk" : "PerfilError"] =
+                putResp.Success ? "Contraseña cambiada correctamente." : "Error al guardar: " + putResp.Message;
+
+            return RedirectToAction(nameof(Perfil));
+        }
+
+        // Vuelve a firmar la cookie con los datos actualizados del usuario
+        private async Task RenovarSesionAsync(Usuario usuario)
+        {
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.Name, $"{usuario.Nombres} {usuario.Apellidos}"),
+                new(ClaimTypes.Email, usuario.CorreoInstitucional),
+                new(ClaimTypes.NameIdentifier, usuario.Cedula),
+                new("RolId", usuario.RolId.ToString())
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(identity));
         }
     }
 }

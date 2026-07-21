@@ -14,27 +14,50 @@
         padding: 0 5px;
     }
 
-    .typing-indicator span {
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        background-color: #90949c;
-        border-radius: 50%;
-        margin: 0 2px;
-        animation: typing 1.4s infinite both;
-    }
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #55605A; /* contraste accesible (antes gris claro) */
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typing 1.4s infinite both;
+        }
 
-    .typing-indicator span:nth-child(1) { animation-delay: 0s; }
-    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+            .typing-indicator span:nth-child(1) {
+                animation-delay: 0s;
+            }
+
+            .typing-indicator span:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+
+            .typing-indicator span:nth-child(3) {
+                animation-delay: 0.4s;
+            }
 
     @@keyframes typing {
-        0%, 80%, 100% { transform: translateY(0); }
-        40% { transform: translateY(-5px); }
+        0%, 80%, 100% {
+            transform: translateY(0);
+        }
+
+        40% {
+            transform: translateY(-5px);
+        }
+    }
+
+    /* Contraste accesible para el subtítulo y el placeholder */
+    .sb-dash-subtitle {
+        color: #55605A;
+    }
+
+    #sbChatInput::placeholder {
+        color: #55605A;
+        opacity: 1;
     }
 </style>
 
-<h2 class="sb-dash-title">Preguntas Frecuentes</h2>
+<h1 class="sb-dash-title h2">Preguntas Frecuentes</h1>
 <p class="sb-dash-subtitle">Habla con SmartBot, nuestro asistente virtual</p>
 
 <div class="sb-chip-row mt-3">
@@ -44,13 +67,13 @@
     }
 </div>
 
-<div class="sb-chat-box mt-3" id="sbChatBox">
+<div class="sb-chat-box mt-3" id="sbChatBox" role="log" aria-label="Conversación con SmartBot">
     @foreach (var msg in Model.Mensajes)
     {
         <div class="sb-chat-msg @(msg.EsBot ? "sb-chat-bot" : "sb-chat-user")">
             @if (msg.EsBot)
             {
-                <div class="sb-widget-icon sb-chat-avatar"><i class="fa-solid fa-robot"></i></div>
+                <div class="sb-widget-icon sb-chat-avatar"><i class="fa-solid fa-robot" aria-hidden="true"></i></div>
             }
             <div class="sb-chat-bubble">@msg.Texto</div>
         </div>
@@ -58,8 +81,11 @@
 </div>
 
 <form class="sb-chat-input-row" id="sbChatForm">
-    <input type="text" id="sbChatInput" class="form-control" placeholder="Escribe tu pregunta..." autocomplete="off" />
-    <button type="submit" class="btn sb-btn-solid sb-chat-send"><i class="fa-solid fa-paper-plane"></i></button>
+    <input type="text" id="sbChatInput" class="form-control" placeholder="Escribe tu pregunta..."
+           autocomplete="off" aria-label="Escribe tu pregunta para SmartBot" />
+    <button type="submit" class="btn sb-btn-solid sb-chat-send" aria-label="Enviar pregunta">
+        <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+    </button>
 </form>
 
 @section Scripts {
@@ -69,8 +95,9 @@
             const box = document.getElementById('sbChatBox');
             const div = document.createElement('div');
             div.className = 'sb-chat-msg ' + (esUsuario ? 'sb-chat-user' : 'sb-chat-bot');
-            div.innerHTML = (esUsuario ? '' : '<div class="sb-widget-icon sb-chat-avatar"><i class="fa-solid fa-robot"></i></div>')
-                + '<div class="sb-chat-bubble">' + texto + '</div>';
+            div.innerHTML = (esUsuario ? '' : '<div class="sb-widget-icon sb-chat-avatar"><i class="fa-solid fa-robot" aria-hidden="true"></i></div>')
+                + '<div class="sb-chat-bubble"></div>';
+            div.querySelector('.sb-chat-bubble').textContent = texto;
             box.appendChild(div);
             box.scrollTop = box.scrollHeight;
         }
@@ -79,13 +106,13 @@
         function efectoMaquinaDeEscribir(texto, elementoDestino, velocidad = 20) {
             let i = 0;
             elementoDestino.innerHTML = "";
-            
+
             function escribir() {
                 if (i < texto.length) {
-                    if(texto.charAt(i) === '\n') {
+                    if (texto.charAt(i) === '\n') {
                         elementoDestino.innerHTML += '<br>';
                     } else {
-                        elementoDestino.innerHTML += texto.charAt(i);
+                        elementoDestino.appendChild(document.createTextNode(texto.charAt(i)));
                     }
                     i++;
                     setTimeout(escribir, velocidad);
@@ -99,20 +126,20 @@
 
         async function procesarPregunta(texto) {
             const box = document.getElementById('sbChatBox');
-            
+
             // 1. Mostrar pregunta del usuario
             agregarMensaje(texto, true);
-            
+
             // 2. Mostrar burbuja de "pensando..."
             const idPensando = "pensando-" + Date.now();
             const divPensando = document.createElement('div');
             divPensando.id = idPensando;
             divPensando.className = 'sb-chat-msg sb-chat-bot';
-            divPensando.innerHTML = '<div class="sb-widget-icon sb-chat-avatar"><i class="fa-solid fa-robot"></i></div>'
+            divPensando.innerHTML = '<div class="sb-widget-icon sb-chat-avatar"><i class="fa-solid fa-robot" aria-hidden="true"></i></div>'
                 + '<div class="sb-chat-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';
             box.appendChild(divPensando);
             box.scrollTop = box.scrollHeight;
-            
+
             try {
                 // 3. Llamar a nuestro controlador C#
                 const respuesta = await fetch('/Dashboard/EnviarMensajeN8N', {
@@ -122,26 +149,26 @@
                 });
 
                 const datos = await respuesta.json();
-                
+
                 // 4. Eliminar la burbuja de "pensando..."
                 document.getElementById(idPensando).remove();
-                
+
                 // 5. Mostrar la respuesta con el efecto de escritura
-                if(datos && datos.respuesta) {
+                if (datos && datos.respuesta) {
                     const idRespuesta = "respuesta-" + Date.now();
                     const divRespuesta = document.createElement('div');
                     divRespuesta.className = 'sb-chat-msg sb-chat-bot';
-                    divRespuesta.innerHTML = '<div class="sb-widget-icon sb-chat-avatar"><i class="fa-solid fa-robot"></i></div>'
+                    divRespuesta.innerHTML = '<div class="sb-widget-icon sb-chat-avatar"><i class="fa-solid fa-robot" aria-hidden="true"></i></div>'
                         + '<div class="sb-chat-bubble" id="' + idRespuesta + '"></div>';
-                    
+
                     box.appendChild(divRespuesta);
-                    
+
                     // Lanzar la magia
                     efectoMaquinaDeEscribir(datos.respuesta, document.getElementById(idRespuesta));
                 } else {
                     agregarMensaje("n8n recibió el mensaje, pero no devolvió el formato JSON correcto.", false);
                 }
-                
+
             } catch (error) {
                 console.error("Error:", error);
                 document.getElementById(idPensando)?.remove();
@@ -153,13 +180,13 @@
             procesarPregunta(btn.textContent);
         }
 
-        document.getElementById('sbChatForm').addEventListener('submit', function(e) {
+        document.getElementById('sbChatForm').addEventListener('submit', function (e) {
             e.preventDefault();
             const input = document.getElementById('sbChatInput');
             const texto = input.value;
-            
+
             if (!texto.trim()) return;
-            
+
             procesarPregunta(texto);
             input.value = ''; // Limpiar el input
         });
