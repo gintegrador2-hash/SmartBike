@@ -23,19 +23,26 @@ namespace SmartBike_MVC.Models
     public class RegisterViewModel
     {
         [Required(ErrorMessage = "La cédula es obligatoria")]
-        [StringLength(10, ErrorMessage = "La cédula debe tener máximo 10 caracteres")]
+        [CedulaEcuatoriana]
         [Display(Name = "Cédula")]
+  
         public string Cedula { get; set; } = null!;
         [Required(ErrorMessage = "Los nombres son obligatorios")]
+        [RegularExpression(@"^[A-Za-zÁÉÍÓÚáéíóúÑñÜü ]{2,80}$",
+      ErrorMessage = "Los nombres solo pueden contener letras (mínimo 2 caracteres)")]
         [Display(Name = "Nombres")]
         public string Nombres { get; set; } = null!;
 
         [Required(ErrorMessage = "Los apellidos son obligatorios")]
+        [RegularExpression(@"^[A-Za-zÁÉÍÓÚáéíóúÑñÜü ]{2,80}$",
+          ErrorMessage = "Los apellidos solo pueden contener letras (mínimo 2 caracteres)")]
         [Display(Name = "Apellidos")]
         public string Apellidos { get; set; } = null!;
 
         [Required(ErrorMessage = "El correo institucional es obligatorio")]
         [EmailAddress(ErrorMessage = "Ingrese un correo válido")]
+        [RegularExpression(@"^[A-Za-z0-9._%+-]+@utn\.edu\.ec$",
+                ErrorMessage = "Debe usar su correo institucional @utn.edu.ec")]
         [Display(Name = "Correo institucional")]
         public string CorreoInstitucional { get; set; } = null!;
 

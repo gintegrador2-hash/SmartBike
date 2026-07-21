@@ -280,45 +280,74 @@ namespace SmartBike_MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditarPerfil(EditarPerfilViewModel model)
         {
-            var cedula = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var cedulaActual = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (string.IsNullOrEmpty(cedula)
+            // 1. Validar campos obligatorios
+            if (string.IsNullOrEmpty(cedulaActual)
+                || string.IsNullOrWhiteSpace(model.Cedula)
                 || string.IsNullOrWhiteSpace(model.Nombres)
                 || string.IsNullOrWhiteSpace(model.Apellidos)
                 || string.IsNullOrWhiteSpace(model.CorreoInstitucional))
             {
-                TempData["PerfilError"] = "Nombres, apellidos y correo son obligatorios.";
+                TempData["PerfilError"] = "Todos los campos son obligatorios.";
                 return RedirectToAction(nameof(Perfil));
             }
 
-            if (!model.CorreoInstitucional.Contains('@'))
+            // 2. Validar cédula con el algoritmo ecuatoriano (módulo 10)
+            if (!new CedulaEcuatorianaAttribute().IsValid(model.Cedula.Trim()))
             {
-                TempData["PerfilError"] = "El correo institucional no tiene un formato válido.";
+                TempData["PerfilError"] = "La cédula ingresada no es una cédula ecuatoriana válida.";
                 return RedirectToAction(nameof(Perfil));
             }
 
-            // 1. Traer el usuario completo desde la API
-            var resp = await _apiService.GetAsync<Usuario>($"Usuarios/{cedula}");
+            // 3. Validar correo institucional
+            if (!System.Text.RegularExpressions.Regex.IsMatch(
+                    model.CorreoInstitucional.Trim(),
+                    @"^[A-Za-z0-9._%+-]+@utn\.edu\.ec$"))
+            {
+                TempData["PerfilError"] = "Debe usar su correo institucional @utn.edu.ec.";
+                return RedirectToAction(nameof(Perfil));
+            }
+
+            // 4. Traer el usuario completo desde la API
+            var resp = await _apiService.GetAsync<Usuario>($"Usuarios/{cedulaActual}");
             if (!resp.Success || resp.Data == null)
             {
                 TempData["PerfilError"] = "No se pudo cargar tu información. Intenta de nuevo.";
                 return RedirectToAction(nameof(Perfil));
             }
 
-            // 2. Actualizar los campos editables y guardar vía API (PUT)
+            // 5. Actualizar los campos editables y guardar vía API (PUT)
             var usuario = resp.Data;
             usuario.Nombres = model.Nombres.Trim();
             usuario.Apellidos = model.Apellidos.Trim();
             usuario.CorreoInstitucional = model.CorreoInstitucional.Trim();
 
-            var putResp = await _apiService.PutAsync($"Usuarios/{cedula}", usuario);
+            var putResp = await _apiService.PutAsync($"Usuarios/{cedulaActual}", usuario);
             if (!putResp.Success)
             {
                 TempData["PerfilError"] = "Error al guardar: " + putResp.Message;
                 return RedirectToAction(nameof(Perfil));
             }
 
-            // 3. Renovar la cookie para que el nombre y correo nuevos se vean de inmediato
+            // 6. Si además cambió la cédula, ejecutar el cambio transaccional en la API
+            var cedulaNueva = model.Cedula.Trim();
+            if (cedulaNueva != cedulaActual)
+            {
+                var cedulaResp = await _apiService.PostAsync(
+                    $"Usuarios/{cedulaActual}/CambiarCedula",
+                    new { NuevaCedula = cedulaNueva });
+
+                if (!cedulaResp.Success)
+                {
+                    TempData["PerfilError"] = "Datos guardados, pero la cédula no se pudo cambiar: " + cedulaResp.Message;
+                    return RedirectToAction(nameof(Perfil));
+                }
+
+                usuario.Cedula = cedulaNueva;
+            }
+
+            // 7. Renovar la cookie con los datos nuevos (incluida la cédula)
             await RenovarSesionAsync(usuario);
 
             TempData["PerfilOk"] = "Perfil actualizado correctamente.";

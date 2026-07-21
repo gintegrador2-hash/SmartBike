@@ -46,6 +46,7 @@ namespace SmartBike_MVC.Models
     public class EditarPerfilViewModel
     {
         public string Nombres { get; set; } = null!;
+        public string Cedula { get; set; } = null!;
         public string Apellidos { get; set; } = null!;
         public string CorreoInstitucional { get; set; } = null!;
     }
