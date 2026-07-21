@@ -76,6 +76,7 @@ namespace SmartBike_MVC.Controllers
             // FÓRMULA ESTÁNDAR DE HUELLA DE CARBONO (metodología DEFRA):
             //   CO2 evitado = km × (factor del auto − factor del modo usado)
             // Los factores de emisión (g CO2/km) se leen de la tabla
+ 
             // ============================================================
             const double FactorAutoGKm = 150; // línea base: auto a gasolina promedio
 
@@ -369,9 +370,9 @@ namespace SmartBike_MVC.Controllers
             if (string.IsNullOrEmpty(cedula))
                 return RedirectToAction(nameof(Perfil));
 
-            if (string.IsNullOrWhiteSpace(model.ContrasenaNueva) || model.ContrasenaNueva.Length < 6)
+            if (string.IsNullOrWhiteSpace(model.ContrasenaNueva) || model.ContrasenaNueva.Length < 8)
             {
-                TempData["PerfilError"] = "La nueva contraseña debe tener al menos 6 caracteres.";
+                TempData["PerfilError"] = "La nueva contraseña debe tener al menos 8 caracteres.";
                 return RedirectToAction(nameof(Perfil));
             }
 
@@ -381,27 +382,15 @@ namespace SmartBike_MVC.Controllers
                 return RedirectToAction(nameof(Perfil));
             }
 
-            var resp = await _apiService.GetAsync<Usuario>($"Usuarios/{cedula}");
-            if (!resp.Success || resp.Data == null)
-            {
-                TempData["PerfilError"] = "No se pudo cargar tu información. Intenta de nuevo.";
-                return RedirectToAction(nameof(Perfil));
-            }
+            // El cambio se delega a la API: allí se verifica la contraseña actual
+            // contra el hash BCrypt y se genera el hash de la nueva.
+            // El MVC nunca maneja hashes ni compara contraseñas.
+            var respuesta = await _apiService.PostAsync(
+                $"Usuarios/{cedula}/CambiarContrasena",
+                new { ContrasenaActual = model.ContrasenaActual, ContrasenaNueva = model.ContrasenaNueva });
 
-            var usuario = resp.Data;
-
-            // Verificar la contraseña actual antes de cambiarla
-            if (usuario.ContrasenaHash != model.ContrasenaActual)
-            {
-                TempData["PerfilError"] = "La contraseña actual es incorrecta.";
-                return RedirectToAction(nameof(Perfil));
-            }
-
-            usuario.ContrasenaHash = model.ContrasenaNueva;
-
-            var putResp = await _apiService.PutAsync($"Usuarios/{cedula}", usuario);
-            TempData[putResp.Success ? "PerfilOk" : "PerfilError"] =
-                putResp.Success ? "Contraseña cambiada correctamente." : "Error al guardar: " + putResp.Message;
+            TempData[respuesta.Success ? "PerfilOk" : "PerfilError"] =
+                respuesta.Success ? "Contraseña cambiada correctamente." : respuesta.Message;
 
             return RedirectToAction(nameof(Perfil));
         }
