@@ -27,5 +27,16 @@ using Modelos;
 
     public DbSet<Modelos.InteraccionChatbot> InteraccionChatbot { get; set; } = default!;
     public DbSet<Modelos.PreguntaFrecuente> PreguntaFrecuente { get; set; } = default!;
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        // Mapear la tabla intermedia N:M roles <-> permisos con la
+        // misma convención snake_case del resto del esquema
+        modelBuilder.Entity<Rol>()
+            .HasMany(r => r.Permisos)
+            .WithMany(p => p.Roles)
+            .UsingEntity(j => j.ToTable("roles_permisos"));
+    }
 
 }
