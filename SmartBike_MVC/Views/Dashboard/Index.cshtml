@@ -7,14 +7,13 @@
 
 <style>
     :root {
-        --f-primary: #2E7D46;
-        --f-primary-light: #EAF4EC;
-        --f-primary-dark: #1E5B3A;
-        --f-border: #E2E5E1;
-        --f-text: #1A1A1A;
-        --f-text-sec: #6B7280;
+        --f-primary: var(--sb-green);
+        --f-primary-light: #E4F0E8;
+        --f-primary-dark: var(--sb-green-dark);
+        --f-border: #E7ECE8;
+        --f-text: #1c2b22;
+        --f-text-sec: #55605A;
     }
-
     .figma-trans-card { border: 1px solid var(--f-border); border-radius: 12px; padding: 24px 16px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 12px; background-color: white; transition: all 0.15s ease; height: 100%; }
     .figma-trans-card.selected { background-color: var(--f-primary); border-color: var(--f-primary); }
     .figma-trans-card .icon-wrapper { width: 52px; height: 52px; border-radius: 50%; background-color: var(--f-primary-light); display: flex; align-items: center; justify-content: center; color: var(--f-primary); font-size: 24px; transition: all 0.15s ease; }

@@ -4,16 +4,14 @@
     Layout = "_AuthLayout";
 }
 <div class="sb-auth-brand">
-    <div class="sb-widget-icon sb-auth-icon"><i class="fa-solid fa-bicycle"></i></div>
+    <div class="sb-widget-icon sb-auth-icon"><i class="fa-solid fa-bicycle" aria-hidden="true"></i></div>
     <div class="ms-2">
         <div class="sb-auth-brand-title">SmartBike</div>
         <div class="sb-auth-brand-subtitle">Universidad Técnica del Norte</div>
     </div>
 </div>
-
 <h3 class="sb-auth-heading">Crear cuenta</h3>
 <p class="sb-auth-subheading">Regístrate con tu correo institucional</p>
-
 <form asp-controller="Account" asp-action="Register" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
 
@@ -43,15 +41,15 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="Carrera" class="form-label"></label>
-        <select asp-for="Carrera" class="form-select">
+        <label asp-for="CarreraId" class="form-label">Carrera</label>
+        <select asp-for="CarreraId" class="form-select" aria-label="Seleccione su carrera">
             <option value="">Seleccione...</option>
-            <option>Ingeniería en Sistemas</option>
-            <option>Ingeniería Industrial</option>
-            <option>Ingeniería Textil</option>
-            <option>Ingeniería en Mecatrónica</option>
-            <option>Contabilidad y Auditoría</option>
+            @foreach (var carrera in Model.Carreras)
+            {
+                <option value="@carrera.CarreraId">@carrera.Nombre</option>
+            }
         </select>
+        <span asp-validation-for="CarreraId" class="text-danger"></span>
     </div>
 
     <div class="row">
@@ -68,12 +66,10 @@
     </div>
 
     <button type="submit" class="btn sb-btn-solid w-100">Crear cuenta</button>
-
     <p class="text-center mt-3">
         ¿Ya tienes cuenta? <a asp-controller="Account" asp-action="Login" class="sb-link-green">Iniciar sesión</a>
     </p>
 </form>
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

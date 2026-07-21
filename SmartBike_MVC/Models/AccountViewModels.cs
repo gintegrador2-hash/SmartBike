@@ -39,9 +39,12 @@ namespace SmartBike_MVC.Models
         [Display(Name = "Correo institucional")]
         public string CorreoInstitucional { get; set; } = null!;
 
+        [Required(ErrorMessage = "Seleccione su carrera")]
         [Display(Name = "Carrera")]
-        public string? Carrera { get; set; }
+        public int? CarreraId { get; set; }
 
+        // Lista para llenar el combo (no se envía en el POST)
+        public List<Modelos.Carrera> Carreras { get; set; } = new();
         [Required(ErrorMessage = "La contraseña es obligatoria")]
         [DataType(DataType.Password)]
         [MinLength(8, ErrorMessage = "Mínimo 8 caracteres")]

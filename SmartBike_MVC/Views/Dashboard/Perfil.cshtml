@@ -5,7 +5,7 @@
     Layout = "_DashboardLayout";
 }
 
-<h1 class="sb-dash-title h2">Mi Perfil</h1>
+<h1 class="sb-dash-title h2">Mi perfil</h1>
 
 @if (TempData["PerfilOk"] != null)
 {
@@ -39,13 +39,6 @@
             data-bs-toggle="modal" data-bs-target="#modalContrasena">
         <i class="fa-solid fa-lock me-2" aria-hidden="true"></i> Cambiar contraseña
     </button>
-
-    <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
-        @Html.AntiForgeryToken()
-        <button type="submit" class="btn btn-link text-decoration-none text-danger p-0">
-            <i class="fa-solid fa-arrow-right-from-bracket me-2" aria-hidden="true"></i> Cerrar sesión
-        </button>
-    </form>
 </div>
 
 <!-- ==================== MODAL: EDITAR PERFIL ==================== -->

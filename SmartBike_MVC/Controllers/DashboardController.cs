@@ -263,10 +263,16 @@ namespace SmartBike_MVC.Controllers
                 Iniciales = string.Concat($"{usuario?.Nombres} {usuario?.Apellidos}"
                     .Split(' ', StringSplitOptions.RemoveEmptyEntries)
                     .Take(2).Select(p => p[0])).ToUpper(),
-                Carrera = User.FindFirst("Carrera")?.Value ?? "Ingeniería en Sistemas",
+                Carrera = await ObtenerNombreCarreraAsync(usuario?.CarreraId),
                 CorreoInstitucional = usuario?.CorreoInstitucional ?? ""
             };
             return View(model);
+        }
+        private async Task<string> ObtenerNombreCarreraAsync(int? carreraId)
+        {
+            if (carreraId == null) return "Sin carrera registrada";
+            var resp = await _apiService.GetAsync<Modelos.Carrera>($"Carreras/{carreraId}");
+            return resp.Success && resp.Data != null ? resp.Data.Nombre : "Sin carrera registrada";
         }
 
         // POST: /Dashboard/EditarPerfil

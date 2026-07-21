@@ -72,9 +72,11 @@ namespace SmartBike_MVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult Register()
+        public async Task<IActionResult> Register()
         {
-            return View(new RegisterViewModel());
+            var model = new RegisterViewModel();
+            await CargarCarrerasAsync(model);
+            return View(model);
         }
 
         [HttpPost]
@@ -82,9 +84,13 @@ namespace SmartBike_MVC.Controllers
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
+            {
+                // Recargar el combo antes de volver a mostrar el formulario
+                await CargarCarrerasAsync(model);
                 return View(model);
+            }
 
-            // 1. Mapeamos tu ViewModel a tu Modelo real de BD
+            // 1. Mapeamos el ViewModel al Modelo real de BD
             var nuevoUsuario = new Usuario
             {
                 Cedula = model.Cedula,
@@ -93,8 +99,9 @@ namespace SmartBike_MVC.Controllers
                 CorreoInstitucional = model.CorreoInstitucional,
                 ContrasenaHash = model.Contrasena,
 
-                RolId = 1, // <--- CAMBIADO A 1 (Debe coincidir con el ID de tu tabla Roles)
-                CampusId = 1, // <--- (Debe coincidir con el ID de tu tabla Campus)
+                RolId = 1,      // Rol estudiante (debe coincidir con tu tabla roles)
+                CampusId = 1,   // Campus principal (debe coincidir con tu tabla campus)
+                CarreraId = model.CarreraId,   // <- AHORA SÍ se guarda la carrera elegida
 
                 FechaRegistro = DateTime.Now,
                 Estado = true
@@ -105,12 +112,22 @@ namespace SmartBike_MVC.Controllers
 
             if (respuesta.Success)
             {
-                TempData["RegistroExitoso"] = "Cuenta creada correctamente en la base de datos. Ya puedes iniciar sesión.";
+                TempData["RegistroExitoso"] = "Cuenta creada correctamente. Ya puedes iniciar sesión.";
                 return RedirectToAction(nameof(Login));
             }
 
-            ModelState.AddModelError(string.Empty, "Error al registrar en la base de datos: " + (respuesta.Message ?? "Intente de nuevo"));
+            ModelState.AddModelError(string.Empty, "Error al registrar: " + (respuesta.Message ?? "Intente de nuevo"));
+            await CargarCarrerasAsync(model);
             return View(model);
+        }
+
+        // Trae las carreras desde la API para llenar el combo del registro
+        private async Task CargarCarrerasAsync(RegisterViewModel model)
+        {
+            var respuesta = await _apiService.GetListAsync<Modelos.Carrera>("Carreras");
+            model.Carreras = (respuesta.Success && respuesta.Data != null)
+                ? respuesta.Data.OrderBy(c => c.Nombre).ToList()
+                : new List<Modelos.Carrera>();
         }
 
         [HttpPost]
