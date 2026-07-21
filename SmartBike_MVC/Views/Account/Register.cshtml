@@ -73,8 +73,7 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // Mismo algoritmo de la cédula ecuatoriana, en JavaScript,
-        // para validar en vivo mientras el usuario escribe
+
         function esCedulaEcuatorianaValida(cedula) {
             if (!/^[0-9]{10}$/.test(cedula)) return false;
             const provincia = parseInt(cedula.substring(0, 2), 10);

@@ -52,7 +52,6 @@ namespace SmartBike_MVC.Controllers
         }
 
         [HttpPost]
-        [HttpPost]
         public async Task<IActionResult> RegistrarViaje(string transporte, string distancia)
         {
             var correoOIdentificador = User.Identity?.Name ?? "desconocido";
@@ -73,38 +72,43 @@ namespace SmartBike_MVC.Controllers
                 _ => 0
             };
 
-            int co2Evitado = 0;
-            if (transporte == "bike" || transporte == "walk")
-            {
-                co2Evitado = (int)(km * 150);
-            }
+            // ============================================================
+            // FÓRMULA ESTÁNDAR DE HUELLA DE CARBONO (metodología DEFRA):
+            //   CO2 evitado = km × (factor del auto − factor del modo usado)
+            // Los factores de emisión (g CO2/km) se leen de la tabla
+            // ============================================================
+            const double FactorAutoGKm = 150; // línea base: auto a gasolina promedio
 
-            // ============================================================
-            // NUEVO: guardar el viaje en la BD a través de la API
-            // (antes solo se guardaba en TempData y el panel admin no veía nada)
-            // ============================================================
+            int co2Evitado = 0;
             var cedula = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
             if (!string.IsNullOrEmpty(cedula) && km > 0)
             {
-                int? tipoId = await ObtenerTipoTransporteIdAsync(transporte);
+                // 1. Traer el tipo de transporte REAL con sus factores desde la API
+                var tipo = await ObtenerTipoTransporteAsync(transporte);
 
-                if (tipoId.HasValue)
+                if (tipo != null)
                 {
+                    // 2. Aplicar la fórmula con el factor leído de la BD
+                    double factorModo = (double)tipo.FactorCo2GKm;
+                    if (factorModo < FactorAutoGKm)
+                    {
+                        co2Evitado = (int)(km * (FactorAutoGKm - factorModo));
+                    }
+
+                    // 3. Guardar el viaje en la BD a través de la API
                     var viaje = new
                     {
                         UsuarioCedula = cedula,
-                        TipoTransporteId = tipoId.Value,
+                        TipoTransporteId = tipo.TipoTransporteId,
                         DistanciaKm = (decimal)km,
                         Validado = false,
                         Fecha = System.DateTime.Today,
                         FechaRegistro = System.DateTime.Now
                     };
-
                     await _apiService.PostAsync("RegistrosViajes", viaje);
                 }
             }
-            // ============================================================
 
             TempData[llaveCo2] = co2Evitado;
             TempData[llaveRegistro] = true;
@@ -112,8 +116,9 @@ namespace SmartBike_MVC.Controllers
             return RedirectToAction("Index");
         }
 
-        // Busca el ID del tipo de transporte en la BD según lo elegido en la vista
-        private async Task<int?> ObtenerTipoTransporteIdAsync(string transporte)
+        // Busca el tipo de transporte COMPLETO (con sus factores de emisión)
+        // según lo elegido en la vista
+        private async Task<Modelos.TipoTransporte?> ObtenerTipoTransporteAsync(string transporte)
         {
             var tipos = await _apiService.GetListAsync<Modelos.TipoTransporte>("TiposTransporte");
             if (!tipos.Success || tipos.Data == null || !tipos.Data.Any()) return null;
@@ -129,12 +134,12 @@ namespace SmartBike_MVC.Controllers
             var tipo = tipos.Data.FirstOrDefault(t =>
                 candidatos.Any(c => t.Nombre.ToLower().Contains(c)));
 
-            // Respaldo: si no coincide el nombre, usa el factor de emisión
+            // Respaldo: si el nombre no coincide, se busca por factor de emisión
             tipo ??= (transporte == "bike" || transporte == "walk")
                 ? tipos.Data.FirstOrDefault(t => t.FactorCo2GKm == 0)
                 : tipos.Data.FirstOrDefault(t => t.FactorCo2GKm > 0);
 
-            return tipo?.TipoTransporteId;
+            return tipo;
         }
 
         public IActionResult Estacionamientos()
