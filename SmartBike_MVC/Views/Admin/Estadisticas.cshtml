@@ -59,25 +59,40 @@
         <canvas id="graficoTendencia" height="90"></canvas>
     </div>
 </div>
-
 <!-- ==================== FILTROS + EXPORTAR ==================== -->
 <div class="d-flex flex-wrap align-items-center gap-2">
     <form method="get" asp-controller="Admin" asp-action="Estadisticas"
           class="d-flex flex-wrap gap-2" id="formFiltros">
         <select name="dias" class="form-select sb-admin-select" id="filtro-dias"
                 aria-label="Filtrar por rango de días" onchange="this.form.submit()">
+            @{
+                var opcionesDias = new Dictionary<int, string>
+            {
+            { 7, "Últimos 7 días" }, { 14, "Últimos 14 días" }, { 30, "Últimos 30 días" }
+            };
+            }
+            @foreach (var op in opcionesDias)
+            {
+                <option value="@op.Key" selected="@(Model.Dias == op.Key)">@op.Value</option>
+            }
         </select>
 
-        <select name="dias" class="form-select sb-admin-select" id="filtro-dias"
-                aria-label="Filtrar por rango de días" onchange="this.form.submit()">
+        <select name="facultadId" class="form-select sb-admin-select" id="filtro-facultad"
+                aria-label="Filtrar por facultad" onchange="this.form.submit()">
+            <option value="">Todas las facultades</option>
+            @foreach (var fac in Model.Facultades)
+            {
+                <option value="@fac.FacultadId" selected="@(Model.FacultadId == fac.FacultadId)">
+                    @fac.Nombre
+                </option>
+            }
         </select>
     </form>
 
     <button type="button" class="btn sb-admin-btn-outline ms-auto" onclick="window.print()">
-        <i class="fa-solid fa-download me-1"></i> Exportar PDF
+        <i class="fa-solid fa-download me-1" aria-hidden="true"></i> Exportar PDF
     </button>
 </div>
-
 @section Scripts {
     <script src="~/lib/chartjs/chart.umd.min.js"></script>
     <script>
