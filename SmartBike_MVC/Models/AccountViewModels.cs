@@ -23,7 +23,6 @@ namespace SmartBike_MVC.Models
     public class RegisterViewModel
     {
         [Required(ErrorMessage = "La cédula es obligatoria")]
-        [CedulaEcuatoriana]
         [Display(Name = "Cédula")]
   
         public string Cedula { get; set; } = null!;

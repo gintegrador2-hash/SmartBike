@@ -73,40 +73,56 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-
         function esCedulaEcuatorianaValida(cedula) {
             if (!/^[0-9]{10}$/.test(cedula)) return false;
+
+            // 1. Código de provincia (1 a 24, o 30 para ecuatorianos en el exterior)
             const provincia = parseInt(cedula.substring(0, 2), 10);
-            if (provincia < 1 || provincia > 24) return false;
-            if (parseInt(cedula[2], 10) >= 6) return false;
+            if ((provincia < 1 || provincia > 24) && provincia !== 30) return false;
+
+            // 2. Tercer dígito debe ser menor a 6 para personas naturales
+            const tercerDigito = parseInt(cedula[2], 10);
+            if (tercerDigito >= 6) return false;
+
+            // 3. Algoritmo Módulo 10
             const coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2];
             let suma = 0;
+
             for (let i = 0; i < 9; i++) {
                 let producto = parseInt(cedula[i], 10) * coeficientes[i];
                 if (producto > 9) producto -= 9;
                 suma += producto;
             }
-            let verificador = (Math.ceil(suma / 10) * 10) - suma;
-            if (verificador === 10) verificador = 0;
-            return verificador === parseInt(cedula[9], 10);
+
+            // Cálculo exacto del dígito verificador
+            const digitoVerificadorEsperado = (10 - (suma % 10)) % 10;
+            const digitoVerificadorIngresado = parseInt(cedula[9], 10);
+
+            return digitoVerificadorEsperado === digitoVerificadorIngresado;
         }
+
         const inputCedula = document.getElementById('Cedula');
-        // Solo permite escribir números y máximo 10
-        inputCedula.addEventListener('input', function () {
-            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
-            if (this.value.length === 10) {
-                if (esCedulaEcuatorianaValida(this.value)) {
-                    this.classList.remove('is-invalid');
-                    this.classList.add('is-valid');
+
+        if (inputCedula) {
+            // Limpia caracteres no numéricos y valida al completar los 10 dígitos
+            inputCedula.addEventListener('input', function () {
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+
+                if (this.value.length === 10) {
+                    if (esCedulaEcuatorianaValida(this.value)) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else {
+                        this.classList.remove('is-valid');
+                        this.classList.add('is-invalid');
+                    }
                 } else {
-                    this.classList.remove('is-valid');
-                    this.classList.add('is-invalid');
+                    this.classList.remove('is-valid', 'is-invalid');
                 }
-            } else {
-                this.classList.remove('is-valid', 'is-invalid');
-            }
-        });
-        // Nombres y apellidos: bloquear números y símbolos al teclear
+            });
+        }
+
+        // Nombres y apellidos: bloqueo de números/símbolos
         ['Nombres', 'Apellidos'].forEach(function (id) {
             const input = document.getElementById(id);
             if (input) {
