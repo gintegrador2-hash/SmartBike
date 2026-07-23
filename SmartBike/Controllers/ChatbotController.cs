@@ -8,6 +8,7 @@ namespace SmartBike.Controllers
     [ApiController]
     public class ChatbotController : ControllerBase
     {
+
         private readonly SmartBikeContext _context;
 
         public ChatbotController(SmartBikeContext context)
@@ -45,4 +46,5 @@ namespace SmartBike.Controllers
             return Ok(new { mensaje = "Interacción del asistente guardada." });
         }
     }
+
 }

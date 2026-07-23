@@ -60,10 +60,6 @@ namespace Modelos
         [NotMapped]
         public virtual TipoTransporte? TipoTransporte { get; set; }
 
-        [ForeignKey(nameof(EstacionamientoId))]
-        [NotMapped]
-        public virtual Estacionamiento? Estacionamiento { get; set; }
-
         [ForeignKey(nameof(ValidadoPor))]
         [NotMapped]
         public virtual Usuario? Validador { get; set; }

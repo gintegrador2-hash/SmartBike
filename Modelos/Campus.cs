@@ -25,7 +25,6 @@ namespace Modelos
         public string? Direccion { get; set; }
 
         // Propiedades de navegación
-        public virtual ICollection<Estacionamiento> Estacionamientos { get; set; } = new List<Estacionamiento>();
         public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
     }
 }
